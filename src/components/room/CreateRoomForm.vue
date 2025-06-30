@@ -137,6 +137,7 @@ import {
 import { useTranslations } from '../../Translations/CreateRommTranslation';
 import { useRouter } from 'vue-router';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import '../../firebase/config.js';
 
 const uiLanguage = 'en' // Replace with actual user language from context
 const username = 'Player' // Replace with actual username from context

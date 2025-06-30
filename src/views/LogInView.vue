@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAuth, signInAnonymously } from 'firebase/auth';
+import '../firebase/config.js';
 import Logos from '../components/Logos.vue'
 
 const username = ref('');
@@ -32,9 +33,7 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  
-  <Logos/>
-  <div class="min-h-screen flex items-center justify-center p-6">
+  <div class="flex items-center justify-center min-h-[60vh] p-6">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
       <h1 class="text-2xl font-bold text-primary mb-4 text-center">Iniciar Sesión</h1>
       <form @submit.prevent="handleLogin" class="space-y-4">

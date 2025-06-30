@@ -29,17 +29,22 @@ import { createRouter, createWebHistory } from 'vue-router';
               component: LobbyView,
             },
             {
+              path: '/lobby/:roomId',
+              name: 'RoomLobby',
+              component: LobbyView,
+              props: true
+            },
+            {
               path: '/Game',
               name: 'Game',
               component: GameView,
             },
+            {
+              path: '/login',
+              name: 'Login',
+              component: LogInView,
+            },
           ],
-        },
-        {
-          path: '/LogIn',
-          name: 'LogIn',
-          component: LogInView,
-          meta: { hideHeader: true } // Optional: add a meta field to hide the header on the login page
         },
         {
           path: '/final-stats',
