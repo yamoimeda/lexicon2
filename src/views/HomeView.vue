@@ -94,7 +94,11 @@ const handleJoinRoom = () => {
 };
 
 onMounted(() => {
-  if (!isAuthenticated) {
+  const userId = localStorage.getItem('userId');
+  const username = localStorage.getItem('username');
+
+  if (!userId || !username) {
+    console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
     router.replace('/login');
   }
 });

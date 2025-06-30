@@ -1,12 +1,62 @@
 <script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 import Logos from '../components/Logos.vue'
 
+const username = ref('');
+const router = useRouter();
+
+const handleLogin = async () => {
+  if (!username.value.trim()) {
+    alert('Por favor, ingresa un nombre de usuario.');
+    return;
+  }
+
+  try {
+    const auth = getAuth();
+    const result = await signInAnonymously(auth);
+    const userId = result.user.uid;
+
+    // Guardar el ID del usuario y el nombre en localStorage
+    localStorage.setItem('userId', userId);
+    localStorage.setItem('username', username.value.trim());
+
+    // Redirigir al inicio
+    router.push('/');
+  } catch (error) {
+    console.error('Error al autenticar:', error);
+    alert('Hubo un error al iniciar sesión. Por favor, intenta de nuevo.');
+  }
+};
 </script>
 
 <template>
   
   <Logos/>
-  <h1>Login</h1>
+  <div class="min-h-screen flex items-center justify-center p-6">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+      <h1 class="text-2xl font-bold text-primary mb-4 text-center">Iniciar Sesión</h1>
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
+          <input
+            id="username"
+            v-model="username"
+            type="text"
+            placeholder="Ingresa tu nombre"
+            class="w-full px-4 py-2 border rounded bg-input border-border focus:ring focus:ring-primary"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+        >
+          Iniciar Sesión
+        </button>
+      </form>
+    </div>
+  </div>
 </template>
 
 <style scoped>

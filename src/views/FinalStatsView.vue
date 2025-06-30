@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const players = ref([
@@ -33,6 +33,16 @@ const router = useRouter();
 const goHome = () => {
   router.push('/');
 };
+
+onMounted(() => {
+  const userId = localStorage.getItem('userId');
+  const username = localStorage.getItem('username');
+
+  if (!userId || !username) {
+    console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
+    router.replace('/login');
+  }
+});
 </script>
 
 <style scoped>

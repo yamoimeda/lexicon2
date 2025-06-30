@@ -136,7 +136,8 @@ import {
 } from 'lucide-vue-next'
 import { useTranslations } from '../../Translations/CreateRommTranslation';
 import { useRouter } from 'vue-router';
-   
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
 const uiLanguage = 'en' // Replace with actual user language from context
 const username = 'Player' // Replace with actual username from context
 
@@ -169,27 +170,56 @@ const handleSubmit = async () => {
     alert('Username not available.')
     return
   }
-  router.replace('/login');
+
   isCreating.value = true
 
+  const userId = localStorage.getItem('userId');
+  const username = localStorage.getItem('username');
+
+  if (!userId || !username) {
+    alert('Usuario no autenticado. Por favor, inicia sesión.')
+    router.replace('/login')
+    return
+  }
+
+  const roomId = Math.random().toString(36).substring(2, 8).toUpperCase()
+  const roomSettings = {
+    roomName: settings.roomName,
+    numberOfRounds: settings.numberOfRounds,
+    timePerRound: settings.timePerRound,
+    categories: settings.categories.split(',').map((c) => c.trim()),
+    language: settings.language,
+    endRoundOnFirstSubmit: settings.endRoundOnFirstSubmit,
+    admin: userId,
+    currentRound: 0,
+    gameStatus: 'waiting',
+  }
+
+  const roomData = {
+    id: roomId,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    settings: roomSettings,
+    players: [
+      {
+        id: userId,
+        name: username,
+        isAdmin: true,
+        score: 0,
+        joinedAt: serverTimestamp(),
+      },
+    ],
+    rounds: [],
+  }
+
   try {
-    const roomId = Math.random().toString(36).substring(2, 8).toUpperCase()
-    const roomSettings = {
-      ...settings,
-      categories: settings.categories.split(',').map((c) => c.trim()),
-      admin: username,
-      currentRound: 0,
-      gameStatus: 'waiting'
-    }
-
-    // TODO: Replace with actual Firebase call
-    console.log('Creating room with settings:', roomSettings)
-
-    alert(`Room ${settings.roomName} (ID: ${roomId}) is ready.`)
-    // router.push(`/rooms/${roomId}/lobby`)
+    const db = getFirestore();
+    await addDoc(collection(db, 'rooms'), roomData);
+    alert(`Sala creada con éxito. ID: ${roomId}`)
+    router.push(`/lobby/${roomId}`)
   } catch (error) {
-    console.error('Error creating room:', error)
-    alert('Failed to create room. Please try again.')
+    console.error('Error al crear la sala:', error)
+    alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.')
   } finally {
     isCreating.value = false
   }

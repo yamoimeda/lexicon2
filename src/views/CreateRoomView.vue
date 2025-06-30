@@ -1,9 +1,9 @@
-        
-        <script setup>
+<script setup>
         import { ref, onMounted } from 'vue';
         import { useRouter } from 'vue-router';
         import CreateRoomForm from '../components/room/CreateRoomForm.vue'; // Assuming a Vue component for the form
         import { useTranslations } from '../Translations/CreateRommTranslation';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
         
         // Dummy user context for now
         const isAuthenticated = ref(true); // Replace with actual auth state
@@ -13,7 +13,11 @@
         const router = useRouter();
         
         onMounted(() => {
-          if (!isAuthenticated.value) {
+          const userId = localStorage.getItem('userId');
+          const username = localStorage.getItem('username');
+
+          if (!userId || !username) {
+            console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
             router.replace('/login');
           }
         });
@@ -22,6 +26,56 @@
           router.replace('/');
         };
 
+        const handleCreateRoom = async () => {
+          const userId = localStorage.getItem('userId');
+          const username = localStorage.getItem('username');
+
+          if (!userId || !username) {
+            alert('Usuario no autenticado. Por favor, inicia sesión.');
+            router.replace('/login');
+            return;
+          }
+
+          const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+          const roomSettings = {
+            roomName: `${username}'s Game`,
+            numberOfRounds: 3,
+            timePerRound: 30,
+            categories: ['Nombre', 'Apellido', 'Fruta', 'Color', 'Cosa'],
+            language: 'Spanish',
+            endRoundOnFirstSubmit: false,
+            admin: userId,
+            currentRound: 0,
+            gameStatus: 'waiting',
+          };
+
+          const roomData = {
+            id: roomId,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            settings: roomSettings,
+            players: [
+              {
+                id: userId,
+                name: username,
+                isAdmin: true,
+                score: 0,
+                joinedAt: serverTimestamp(),
+              },
+            ],
+            rounds: [],
+          };
+
+          try {
+            const db = getFirestore();
+            await addDoc(collection(db, 'rooms'), roomData);
+            alert(`Sala creada con éxito. ID: ${roomId}`);
+            router.push(`/lobby/${roomId}`);
+          } catch (error) {
+            console.error('Error al crear la sala:', error);
+            alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.');
+          }
+        };
         
         </script>
 <template>
@@ -38,6 +92,6 @@
             </button>
            
         </div>
-        <CreateRoomForm />
+        <CreateRoomForm @create-room="handleCreateRoom" />
       </div>
 </template>
