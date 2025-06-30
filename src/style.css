@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+
+@theme {
+ --color-background: oklch(0.9686 0.0037 251.5261); /* Very Light Cool Gray */
+ --color-foreground: oklch(0.3466 0.0482 263.7529); /* Darker Blue-Gray for text */
+ --color-card: oklch(1.0000 0.0003 299.1299); /* White */
+ --color-card-foreground: oklch(0.3466 0.0482 263.7529); /* Darker Blue-Gray */
+ --color-popover: oklch(1.0000 0.0003 299.1299); /* White */
+ --color-popover-foreground: oklch(0.3466 0.0482 263.7529); /* Darker Blue-Gray */
+ --color-primary: oklch(0.7721 0.1594 57.6722); /* Vibrant Orange */
+ --color-primary-foreground: oklch(1.0000 0.0003 299.1299); /* White */
+ --color-secondary: oklch(0.8486 0.0888 188.9368); /* Soft Teal */
+ --color-secondary-foreground: oklch(0.3978 0.0610 187.0601); /* Dark Teal */
+ --color-muted: oklch(0.9204 0.0113 249.1223); /* Light Gray */
+ --color-muted-foreground: oklch(0.5437 0.0563 249.0745); /* Medium Gray */
+ --color-accent: oklch(0.7229 0.1831 351.3976); /* Bright Pink */
+ --color-accent-foreground: oklch(0.2671 0.1029 357.0962); /* Dark Pink/Brown */
+ --color-destructive: oklch(0.6356 0.2082 25.3593); /* Standard Red */
+ --color-destructive-foreground: oklch(1.0000 0.0003 299.1299); /* White */
+ --color-border: oklch(0.9050 0.0108 249.1420); /* Light Cool Gray for borders */
+ --color-input: oklch(1.0000 0.0003 299.1299); /* White */
+ --color-ring: oklch(0.8140 0.1299 60.5447); /* Lighter Orange for focus */
+ --color-chart-1: oklch(0.7021 0.1701 32.8997);   /* Bright Red-Orange */
+ --color-chart-2: oklch(0.7741 0.1272 215.2428);  /* Bright Cyan */
+ --color-chart-3: oklch(0.6533 0.1882 296.1916);  /* Bright Purple */
+ --color-chart-4: oklch(0.9000 0.1739 96.8533);   /* Bright Yellow */
+ --color-chart-5: oklch(0.8086 0.1811 151.0463);  /* Bright Green */
+ --color-sidebar-background: oklch(0.9843 0.0019 254.8773); /* Even Lighter Cool Gray */
+ --color-sidebar-foreground: oklch(0.3466 0.0482 263.7529);
+ --color-sidebar-primary: oklch(0.7721 0.1594 57.6722);
+ --color-sidebar-primary-foreground: oklch(1.0000 0.0003 299.1299);
+ --color-sidebar-accent: oklch(0.7229 0.1831 351.3976);
+ --color-sidebar-accent-foreground: oklch(0.2671 0.1029 357.0962);
+ --color-sidebar-border: oklch(0.9210 0.0090 249.3749);
+ --color-sidebar-ring: oklch(0.8140 0.1299 60.5447);
+  
+}
+
+@layer base {
+  :root {
+    --background: 210 20% 96%; /* Very Light Cool Gray */
+    --foreground: 220 30% 25%; /* Darker Blue-Gray for text */
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 220 30% 25%; /* Darker Blue-Gray */
+    --popover: 0 0% 100%; /* White */
+    --popover-foreground: 220 30% 25%; /* Darker Blue-Gray */
+    --primary: 28 100% 62%; /* Vibrant Orange - Kept as requested */
+    --primary-foreground: 0 0% 100%; /* White */
+    --secondary: 175 60% 70%; /* Soft Teal */
+    --secondary-foreground: 175 60% 20%; /* Dark Teal */
+    --muted: 210 25% 90%; /* Light Gray */
+    --muted-foreground: 210 25% 45%; /* Medium Gray */
+    --accent: 330 90% 70%; /* Bright Pink */
+    --accent-foreground: 330 90% 15%; /* Dark Pink/Brown */
+    --destructive: 0 84% 60%; /* Standard Red */
+    --destructive-foreground: 0 0% 100%; /* White */
+    --border: 210 20% 88%; /* Light Cool Gray for borders */
+    --input: 0 0% 100%; /* White */
+    --ring: 28 100% 70%; /* Lighter Orange for focus */
+    --radius: 0.85rem; /* Slightly more rounded for cartoon feel */
+
+    --chart-1: 10 90% 65%;   /* Bright Red-Orange */
+    --chart-2: 190 80% 55%;  /* Bright Cyan */
+    --chart-3: 260 85% 70%;  /* Bright Purple */
+    --chart-4: 50 100% 60%;  /* Bright Yellow */
+    --chart-5: 140 70% 60%;  /* Bright Green */
+
+    --sidebar-background: 210 20% 98%; /* Even Lighter Cool Gray */
+    --sidebar-foreground: 220 30% 25%;
+    --sidebar-primary: 28 100% 62%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 330 90% 70%;
+    --sidebar-accent-foreground: 330 90% 15%;
+    --sidebar-border: 210 20% 90%;
+    --sidebar-ring: 28 100% 70%;
+  }
+
+  .dark {
+    --background: 220 25% 15%; /* Dark Blue-Gray */
+    --foreground: 210 40% 95%; /* Very Light Gray */
+    --card: 220 25% 20%; /* Slightly Lighter Dark Blue-Gray */
+    --card-foreground: 210 40% 95%;
+    --popover: 220 25% 20%;
+    --popover-foreground: 210 40% 95%;
+    --primary: 28 100% 65%; /* Vibrant Orange */
+    --primary-foreground: 30 60% 15%; /* Dark Brown for contrast */
+    --secondary: 175 50% 50%; /* Muted Teal */
+    --secondary-foreground: 175 50% 90%; /* Light Teal/White */
+    --muted: 220 20% 25%; /* Darker Gray */
+    --muted-foreground: 210 30% 70%; /* Medium Gray */
+    --accent: 330 80% 75%; /* Bright Pink */
+    --accent-foreground: 330 80% 20%; /* Dark Pink/Brown */
+    --destructive: 0 70% 65%; /* Slightly brighter red */
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 20% 30%; /* Medium Dark Gray-Blue */
+    --input: 220 20% 22%; /* Dark input background */
+    --ring: 28 100% 75%; /* Lighter Orange */
+    /* --radius: 0.85rem; /* Already set in :root */
+
+    --chart-1: 10 90% 70%;
+    --chart-2: 190 80% 60%;
+    --chart-3: 260 85% 75%;
+    --chart-4: 50 100% 65%;
+    --chart-5: 140 70% 65%;
+
+    --sidebar-background: 220 25% 18%; /* Darker than card for sidebar */
+    --sidebar-foreground: 210 40% 95%;
+    --sidebar-primary: 28 100% 65%;
+    --sidebar-primary-foreground: 30 60% 15%;
+    --sidebar-accent: 330 80% 75%;
+    --sidebar-accent-foreground: 330 80% 20%;
+    --sidebar-border: 220 20% 28%;
+    --sidebar-ring: 28 100% 75%;
+  }
+}
+
+body {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+}
+
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+
+@media (prefers-color-scheme: light) {
+ 
+}

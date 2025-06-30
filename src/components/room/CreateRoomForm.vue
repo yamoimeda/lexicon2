@@ -1,0 +1,197 @@
+<template>
+  <div class="w-full shadow-xl bg-white rounded-lg p-6">
+    <h2 class="text-2xl font-bold text-primary flex items-center mb-2">
+      <SettingsIcon class="mr-2" /> {{ T.customizeTitle }}
+    </h2>
+    <p class="text-gray-600 mb-6">{{ T.customizeDescription }}</p>
+
+    <form @submit.prevent="handleSubmit" class="space-y-6">
+      <div>
+        <label class="font-semibold" for="roomName">{{ T.roomNameLabel }}</label>
+        <input
+          id="roomName"
+          v-model="settings.roomName"
+          :disabled="isCreating"
+          required
+          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm mt-1"
+        />
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <label class="font-semibold flex items-center" for="numberOfRounds">
+            <ListOrderedIcon class="mr-2 h-4 w-4 text-gray-500" />
+            {{ T.roundsLabel }}
+          </label>
+          <input
+            id="numberOfRounds"
+            type="number"
+            min="1"
+            max="10"
+            v-model.number="settings.numberOfRounds"
+            :disabled="isCreating"
+            required
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm mt-1"
+          />
+        </div>
+
+        <div>
+          <label class="font-semibold flex items-center" for="timePerRound">
+            <ClockIcon class="mr-2 h-4 w-4 text-gray-500" />
+            {{ T.timePerRoundLabel }}
+          </label>
+          <input
+            id="timePerRound"
+            type="number"
+            min="30"
+            max="180"
+            step="10"
+            v-model.number="settings.timePerRound"
+            :disabled="isCreating"
+            required
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm mt-1"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="font-semibold" for="categories">{{ T.categoriesLabel }}</label>
+        <input
+          id="categories"
+          v-model="settings.categories"
+          :placeholder="T.defaultCategoriesPlaceholder"
+          :disabled="isCreating"
+          required
+          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm mt-1"
+        />
+        <p class="text-xs text-gray-500 mt-1">{{ T.categoriesDescription }}</p>
+      </div>
+
+      <div>
+        <label class="font-semibold flex items-center" for="language">
+          <LanguagesIcon class="mr-2 h-4 w-4 text-gray-500" />
+          {{ T.languageLabel }}
+        </label>
+        <select
+          id="language"
+          v-model="settings.language"
+          :disabled="isCreating"
+          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm mt-1"
+        >
+          <option value="English">{{ T.english }}</option>
+          <option value="Spanish">{{ T.spanish }}</option>
+          <option value="French">{{ T.french }}</option>
+          <option value="German">{{ T.german }}</option>
+        </select>
+        <p class="text-xs text-gray-500 mt-1">
+          This sets the language for word validation and suggestions during the game.
+        </p>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between">
+          <label class="font-semibold flex items-center" for="endRoundOnFirstSubmit">
+            <ZapIcon class="mr-2 h-4 w-4 text-gray-500" />
+            {{ T.endRoundOnFirstSubmitLabel }}
+          </label>
+          <input
+            type="checkbox"
+            id="endRoundOnFirstSubmit"
+            v-model="settings.endRoundOnFirstSubmit"
+            :disabled="isCreating"
+            class="form-checkbox h-5 w-5 text-primary"
+          />
+        </div>
+        <p class="text-xs text-gray-500 mt-1">{{ T.endRoundOnFirstSubmitDescription }}</p>
+      </div>
+
+      <button
+        @click="handleSubmit"
+        :disabled="isCreating"
+        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-3"
+      >
+        <span v-if="isCreating">
+          <LoaderIcon class="mr-2 h-5 w-5 animate-spin inline" />
+          {{ T.creatingRoomButton }}
+        </span>
+        <span v-else>
+          <PlusCircleIcon class="mr-2 inline" />
+          {{ T.createRoomButton }}
+        </span>
+      </button>
+    </form>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive, watch } from 'vue'
+import {
+  SettingsIcon,
+  ListOrderedIcon,
+  ClockIcon,
+  LanguagesIcon,
+  ZapIcon,
+  LoaderIcon,
+  PlusCircleIcon
+} from 'lucide-vue-next'
+import { useTranslations } from '../../Translations/CreateRommTranslation';
+import { useRouter } from 'vue-router';
+   
+const uiLanguage = 'en' // Replace with actual user language from context
+const username = 'Player' // Replace with actual username from context
+
+const T = useTranslations(uiLanguage);
+
+const isCreating = ref(false)
+
+const settings = reactive({
+  roomName: `${username}'s Game`,
+  numberOfRounds: 3,
+  timePerRound: 60,
+  categories: T.value.defaultCategoriesPlaceholder
+  ,
+  language: 'English',
+  endRoundOnFirstSubmit: false
+})
+
+watch(
+  () => uiLanguage,
+  (newLang) => {
+    settings.language = 'English'
+    settings.categories = T.value.defaultCategoriesPlaceholder
+    settings.roomName = `${username}'s Game`
+  }
+)
+const router = useRouter();
+
+const handleSubmit = async () => {
+  if (!username) {
+    alert('Username not available.')
+    return
+  }
+  router.replace('/login');
+  isCreating.value = true
+
+  try {
+    const roomId = Math.random().toString(36).substring(2, 8).toUpperCase()
+    const roomSettings = {
+      ...settings,
+      categories: settings.categories.split(',').map((c) => c.trim()),
+      admin: username,
+      currentRound: 0,
+      gameStatus: 'waiting'
+    }
+
+    // TODO: Replace with actual Firebase call
+    console.log('Creating room with settings:', roomSettings)
+
+    alert(`Room ${settings.roomName} (ID: ${roomId}) is ready.`)
+    // router.push(`/rooms/${roomId}/lobby`)
+  } catch (error) {
+    console.error('Error creating room:', error)
+    alert('Failed to create room. Please try again.')
+  } finally {
+    isCreating.value = false
+  }
+}
+</script>
