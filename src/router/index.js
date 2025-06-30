@@ -41,6 +41,11 @@ import { createRouter, createWebHistory } from 'vue-router';
           component: LogInView,
           meta: { hideHeader: true } // Optional: add a meta field to hide the header on the login page
         },
+        {
+          path: '/final-stats',
+          name: 'FinalStats',
+          component: () => import('../views/FinalStatsView.vue'),
+        },
       ],
     });
 
