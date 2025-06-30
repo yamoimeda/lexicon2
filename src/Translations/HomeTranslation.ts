@@ -32,5 +32,6 @@ const translations = {
 };
 
 export function useTranslations(language: keyof typeof translations = 'en') {
-  return computed(() => translations[language] || translations.en);
+  const lang = localStorage.getItem('language') || language;
+  return computed(() => translations[lang] || translations.en);
 }

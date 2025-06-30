@@ -78,7 +78,7 @@ import { useTranslations } from '../Translations/HomeTranslation';
 
 
 // Simulación de contexto de usuario
-const username = 'Juan';
+const username = ref('');
 const isAuthenticated = true;
 const language = 'es';
 
@@ -87,19 +87,21 @@ const T = useTranslations(language);
 const roomIdToJoin = ref('');
 const router = useRouter();
 
+onMounted(() => {
+  const userId = localStorage.getItem('userId');
+  const storedUsername = localStorage.getItem('username');
+
+  if (!userId || !storedUsername) {
+    console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
+    router.replace('/login');
+  } else {
+    username.value = storedUsername;
+  }
+});
+
 const handleJoinRoom = () => {
   if (roomIdToJoin.value.trim()) {
     router.push(`/rooms/${roomIdToJoin.value.trim()}/lobby`);
   }
 };
-
-onMounted(() => {
-  const userId = localStorage.getItem('userId');
-  const username = localStorage.getItem('username');
-
-  if (!userId || !username) {
-    console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
-    router.replace('/login');
-  }
-});
 </script>

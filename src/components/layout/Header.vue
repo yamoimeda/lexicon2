@@ -41,13 +41,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { Globe, UserCircle, LogOut, LogIn } from 'lucide-vue-next'; // Assuming you'll use lucide-vue-next for icons
 
 // Dummy data for now
 const isAuthenticated = ref(true);
 const username = ref('DummyUser');
-const language = ref('en'); // Default language
+const language = ref(localStorage.getItem('language') || 'en'); // Default language
 
 const translations = {
   en: {
@@ -75,10 +75,14 @@ const logout = () => {
   username.value = '';
 };
 
-// Function to set language (dummy)
-const setLanguage = (lang) => {
-  language.value = lang;
-};
+watch(language, (newLang) => {
+  localStorage.setItem('language', newLang);
+});
+
+onMounted(() => {
+  const savedLang = localStorage.getItem('language');
+  if (savedLang) language.value = savedLang;
+});
 </script>
 
 <style scoped>
