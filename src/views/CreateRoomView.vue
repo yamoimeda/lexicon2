@@ -26,75 +26,7 @@
           router.replace('/');
         };
 
-        const generateUniqueRoomId = async (db) => {
-          let roomId;
-          let isUnique = false;
-
-          while (!isUnique) {
-            roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const roomRef = collection(db, 'rooms');
-            const querySnapshot = await getDocs(query(roomRef, where('id', '==', roomId)));
-
-            if (querySnapshot.empty) {
-              isUnique = true;
-            }
-          }
-
-          return roomId;
-        };
-
-        const handleCreateRoom = async () => {
-          const userId = localStorage.getItem('userId');
-          const username = localStorage.getItem('username');
-
-          if (!userId || !username) {
-            alert('Usuario no autenticado. Por favor, inicia sesión.');
-            router.replace('/login');
-            return;
-          }
-
-          const db = getFirestore();
-          const roomId = await generateUniqueRoomId(db);
-
-          const roomSettings = {
-            roomName: `${username}'s Game`,
-            numberOfRounds: 3,
-            timePerRound: 30,
-            categories: ['Nombre', 'Apellido', 'Fruta', 'Color', 'Cosa'],
-            language: 'Spanish',
-            endRoundOnFirstSubmit: false,
-            admin: userId,
-            currentRound: 0,
-            gameStatus: 'waiting',
-          };
-
-          const roomData = {
-            id: roomId,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            settings: roomSettings,
-            players: [
-              {
-                id: userId,
-                name: username,
-                isAdmin: true,
-                score: 0,
-                joinedAt: serverTimestamp(),
-              },
-            ],
-            rounds: [],
-          };
-
-          try {
-            await setDoc(doc(db, 'rooms', roomId), roomData);
-            alert(`Sala creada con éxito. ID: ${roomId}`);
-            router.push(`/game/${roomId}`);
-          } catch (error) {
-            console.error('Error al crear la sala:', error);
-            alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.');
-          }
-        };
-        
+       
         </script>
 <template>
   
@@ -110,6 +42,6 @@
             </button>
            
         </div>
-        <CreateRoomForm @create-room="handleCreateRoom" />
+        <CreateRoomForm />
       </div>
 </template>

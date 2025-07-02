@@ -165,32 +165,49 @@ watch(
   }
 )
 const router = useRouter();
+ const generateUniqueRoomId = async (db) => {
+          let roomId;
+          let isUnique = false;
+
+          while (!isUnique) {
+            roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const roomRef = collection(db, 'rooms');
+            const querySnapshot = await getDocs(query(roomRef, where('id', '==', roomId)));
+
+            if (querySnapshot.empty) {
+              isUnique = true;
+            }
+          }
+
+          return roomId;
+        };
 
 const handleSubmit = async () => {
-  
-  isCreating.value = true
 
+  isCreating.value = true;
   const userId = localStorage.getItem('userId');
   const username = localStorage.getItem('username');
 
   if (!userId || !username) {
-    alert('Usuario no autenticado. Por favor, inicia sesión.')
-    router.replace('/login')
-    return
+    alert('Usuario no autenticado. Por favor, inicia sesión.');
+    router.replace('/login');
+    return;
   }
 
-  const roomId = Math.random().toString(36).substring(2, 8).toUpperCase()
+  const db = getFirestore();
+  const roomId = await generateUniqueRoomId(db);
+
   const roomSettings = {
-    roomName: settings.roomName,
-    numberOfRounds: settings.numberOfRounds,
-    timePerRound: settings.timePerRound,
-    categories: settings.categories.split(',').map((c) => c.trim()),
-    language: settings.language,
-    endRoundOnFirstSubmit: settings.endRoundOnFirstSubmit,
+    roomName: `${username}'s Game`,
+    numberOfRounds: 3,
+    timePerRound: 30,
+    categories: ['Nombre', 'Apellido', 'Fruta', 'Color', 'Cosa'],
+    language: 'Spanish',
+    endRoundOnFirstSubmit: false,
     admin: userId,
     currentRound: 0,
     gameStatus: 'waiting',
-  }
+  };
 
   const roomData = {
     id: roomId,
@@ -203,23 +220,25 @@ const handleSubmit = async () => {
         name: username,
         isAdmin: true,
         score: 0,
+        joinedAt: serverTimestamp(),
       },
     ],
     rounds: [],
-  }
+  };
 
   try {
-    const db = getFirestore();
-    await addDoc(collection(db, 'rooms'), roomData);
-    // alert(`Sala creada con éxito. ID: ${roomId}`)
-    router.push(`/lobby/${roomId}`)
+    await setDoc(doc(db, 'rooms', roomId), roomData);
+    alert(`Sala creada con éxito. ID: ${roomId}`);
+    router.push(`/game/${roomId}`);
   } catch (error) {
-    console.error('Error al crear la sala:', error)
-    // alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.')
+    console.error('Error al crear la sala:', error);
+    alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.');
   } finally {
     isCreating.value = false
   }
-}
+
+};
+ 
 
 onMounted(() => {
   const userId = localStorage.getItem('userId');
