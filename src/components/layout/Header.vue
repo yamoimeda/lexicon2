@@ -28,14 +28,15 @@
             <UserCircle size={24} class="w-4 h-4 shrink-0" />
             <span class="text-sm font-medium hidden sm:inline">{{ username }}</span>
           </div>
-          <button @click="logout" class="text-primary-foreground hover:bg-primary/70 px-2 sm:px-3">
+          <button @click="logout" class="flex flex-row text-primary-foreground 
+          hover:bg-primary/70 px-2 sm:px-3 items-center gap-2 sm:gap-2">
             <LogOut size={18} class="w-4 h-4 shrink-0" />
             <span class="hidden sm:inline">{{ currentTranslations.logout }}</span>
           </button>
         </div>
         <div v-else>
           <router-link to="/login" class="text-primary-foreground hover:bg-primary/70 px-2 sm:px-3">
-            <LogIn size={18} class="w-4 h-4 shrink-0"  />
+            <LogIn  class="w-4 h-4 shrink-0"  />
             <span class="hidden sm:inline">{{ currentTranslations.login }}</span>
           </router-link>
         </div>
