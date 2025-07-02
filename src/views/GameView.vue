@@ -34,7 +34,7 @@ const fetchRoomData = async () => {
         return;
       }
 
-      roomData.value = data;
+      roomData.value = { ...data }; // Copiar los datos para evitar referencias directas
       console.log('Datos de la sala:', roomData.value);
     } else {
       console.log('La sala no existe.');
