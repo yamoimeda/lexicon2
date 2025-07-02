@@ -18,11 +18,23 @@ const roomData = ref(null);
 
 const fetchRoomData = async () => {
   try {
+    if (!roomId) {
+      console.error('El ID de la sala no está definido.');
+      return;
+    }
+
     const roomRef = doc(db, 'rooms', roomId);
     const roomSnapshot = await getDoc(roomRef);
 
     if (roomSnapshot.exists()) {
-      roomData.value = roomSnapshot.data();
+      const data = roomSnapshot.data();
+
+      if (!data || typeof data !== 'object') {
+        console.error('Los datos de la sala no son válidos:', data);
+        return;
+      }
+
+      roomData.value = data;
       console.log('Datos de la sala:', roomData.value);
     } else {
       console.log('La sala no existe.');
