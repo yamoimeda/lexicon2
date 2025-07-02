@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { useTranslations } from '../Translations/HomeTranslation';
 import RoomNotFound from '../components/room/RoomNotFound.vue';
 import Waiting from '../components/room/Waiting.vue';
 import Playing from '../components/room/Playing.vue';
@@ -20,6 +21,7 @@ const isAdmin = ref(true); // Cambiar según el usuario actual
 const router = useRouter();
 const db = getFirestore();
 const roomData = ref(null);
+const T = useTranslations;
 
 const fetchRoomData = async () => {
   try {
@@ -95,7 +97,7 @@ defineExpose({
 
     <template v-else>
       <h1 class="text-4xl font-bold text-primary mb-4 text-center">
-        {{ $t('Sala') }}: {{ props.roomId }}
+        ID de sala: {{ props.roomId }}
       </h1>
 
       <RoomNotFound v-if="!roomData" />
