@@ -8,3 +8,7 @@
       </a>
     </div>
   </template>
+  
+  <script setup>
+  defineExpose({});
+  </script>

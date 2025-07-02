@@ -38,6 +38,8 @@ onMounted(() => {
     router.replace('/login');
   }
 });
+
+defineExpose({});
 </script>
 
 <template>

@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-// Este componente no requiere lógica adicional por ahora.
+defineExpose({});
 </script>
 
 <style scoped>
