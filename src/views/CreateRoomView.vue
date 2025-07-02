@@ -3,7 +3,7 @@
         import { useRouter } from 'vue-router';
         import CreateRoomForm from '../components/room/CreateRoomForm.vue'; // Assuming a Vue component for the form
         import { useTranslations } from '../Translations/CreateRommTranslation';
-        import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, setDoc, doc } from 'firebase/firestore';
         import { ArrowRight } from 'lucide-vue-next'
         // Dummy user context for now
         const isAuthenticated = ref(true); // Replace with actual auth state
@@ -26,6 +26,23 @@
           router.replace('/');
         };
 
+        const generateUniqueRoomId = async (db) => {
+          let roomId;
+          let isUnique = false;
+
+          while (!isUnique) {
+            roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const roomRef = collection(db, 'rooms');
+            const querySnapshot = await getDocs(query(roomRef, where('id', '==', roomId)));
+
+            if (querySnapshot.empty) {
+              isUnique = true;
+            }
+          }
+
+          return roomId;
+        };
+
         const handleCreateRoom = async () => {
           const userId = localStorage.getItem('userId');
           const username = localStorage.getItem('username');
@@ -36,7 +53,9 @@
             return;
           }
 
-          const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+          const db = getFirestore();
+          const roomId = await generateUniqueRoomId(db);
+
           const roomSettings = {
             roomName: `${username}'s Game`,
             numberOfRounds: 3,
@@ -67,8 +86,7 @@
           };
 
           try {
-            const db = getFirestore();
-            await addDoc(collection(db, 'rooms'), roomData);
+            await setDoc(doc(db, 'rooms', roomId), roomData);
             alert(`Sala creada con éxito. ID: ${roomId}`);
             router.push(`/game/${roomId}`);
           } catch (error) {
