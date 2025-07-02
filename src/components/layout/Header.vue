@@ -2,19 +2,23 @@
   <header class="bg-primary text-primary-foreground shadow-md">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
       <router-link to="/" class="text-primary-foreground text-3xl font-headline font-bold hover:opacity-90 transition-opacity">
-        {{ translations[language].title }}
+        {{ currentTranslations.title }}
       </router-link>
       <div class="flex items-center gap-3 sm:gap-4">
-        <!-- Language Selector (using basic select for now) -->
-        <div class="flex items-center gap-2">
+        <!-- lenguage Selector (using basic select for now) -->
+        <div class="flex items-center justify-between 
+        rounded-md border-2 px-3 py-2 ring-offset-background 
+        placeholder:text-muted-foreground focus:outline-none 
+        focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed 
+        disabled:opacity-50 [&>span]:line-clamp-1 w-[100px] sm:w-[120px] text-xs sm:text-sm h-9 bg-primary/80 border-primary-foreground/30 hover:bg-primary/70 focus:ring-primary-foreground text-primary-foreground">
           <Globe class="w-4 h-4 shrink-0" />
           <select
-            v-model="language"
-            class="w-[100px] sm:w-[120px] text-xs sm:text-sm h-9 bg-primary/80 border-primary-foreground/30 hover:bg-primary/70 focus:ring-primary-foreground text-primary-foreground"
-            aria-label="Language"
+            v-model="lenguage"
+            class=" text-xs sm:text-sm h-8 bg-primary/80 border-primary-foreground/30 hover:bg-primary/70 focus:ring-primary-foreground text-primary-foreground"
+            aria-label="lenguage"
           >
-            <option value="en">{{ translations.en.english }}</option>
-            <option value="es">{{ translations.es.spanish }}</option>
+            <option value="en">{{ currentTranslations.english }}</option>
+            <option value="es">{{ currentTranslations.spanish }}</option>
           </select>
         </div>
 
@@ -26,13 +30,13 @@
           </div>
           <button @click="logout" class="text-primary-foreground hover:bg-primary/70 px-2 sm:px-3">
             <LogOut size={18} class="w-4 h-4 shrink-0" />
-            <span class="hidden sm:inline">{{ translations[language].logout }}</span>
+            <span class="hidden sm:inline">{{ currentTranslations.logout }}</span>
           </button>
         </div>
         <div v-else>
           <router-link to="/login" class="text-primary-foreground hover:bg-primary/70 px-2 sm:px-3">
             <LogIn size={18} class="w-4 h-4 shrink-0"  />
-            <span class="hidden sm:inline">{{ translations[language].login }}</span>
+            <span class="hidden sm:inline">{{ currentTranslations.login }}</span>
           </router-link>
         </div>
       </div>
@@ -41,32 +45,16 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted,computed } from 'vue';
 import { Globe, UserCircle, LogOut, LogIn } from 'lucide-vue-next'; // Assuming you'll use lucide-vue-next for icons
-
+import { lenguage } from '../../composables/GlobalVariables'
+import { useTranslations } from '../../Translations/HeaderTraducction';
 // Dummy data for now
 const isAuthenticated = ref(true);
 const username = ref('DummyUser');
-const language = ref(localStorage.getItem('language') || 'en'); // Default language
 
-const translations = {
-  en: {
-    title: "Lexicon",
-    logout: "Logout",
-    login: "Login",
-    language: "Language",
-    english: "English",
-    spanish: "Español",
-  },
-  es: {
-    title: "Lexicon",
-    logout: "Salir",
-    login: "Ingresar",
-    language: "Idioma",
-    english: "English",
-    spanish: "Español",
-  }
-};
+
+const currentTranslations = useTranslations;
 
 const logout = () => {
   console.log('Logout clicked');
@@ -75,14 +63,7 @@ const logout = () => {
   username.value = '';
 };
 
-watch(language, (newLang) => {
-  localStorage.setItem('language', newLang);
-});
 
-onMounted(() => {
-  const savedLang = localStorage.getItem('language');
-  if (savedLang) language.value = savedLang;
-});
 </script>
 
 <style scoped>

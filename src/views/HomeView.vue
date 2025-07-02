@@ -11,21 +11,31 @@
     <!-- Region Cards -->
     <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
       <!-- Create Room Card -->
-      <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+      <div class="bg-white border border-gray-300 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
         <div class="p-6">
           <h2 class="font-semibold tracking-tight font-headline text-2xl text-primary flex items-center">
             <PlusCircle class="w-5 h-5 mr-2 text-primary" />
             {{ T.createRoomTitle }}
           </h2>
-          <p class="text-gray-600">{{ T.createRoomDescription }}</p>
+          <p class="text-sm text-muted-foreground">{{ T.createRoomDescription }}</p>
         </div>
-        <div class="p-6">
+        <div class="p-6 pt-0">
           <p>{{ T.createRoomContent }}</p>
         </div>
-        <div class="p-6 ">
+        <div class="p-6 pt-0">
           <RouterLink
             to="/room/create"
-            class="inline-flex items-center justify-center w-full px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+            class="inline-flex items-center justify-center 
+            gap-2 whitespace-nowrap rounded-xl text-sm font-medium
+            ring-offset-background transition-colors 
+            focus-visible:outline-none 
+            focus-visible:ring-2 focus-visible:ring-ring 
+            focus-visible:ring-offset-2 
+            disabled:pointer-events-none 
+            disabled:opacity-50 [&_svg]:pointer-events-none 
+            [&_svg]:size-4 [&_svg]:shrink-0 
+            h-10 px-4 py-2 w-full bg-primary 
+            hover:bg-primary/90 text-primary-foreground"
           >
             {{ T.createRoomButton }}
             <ArrowRight class="ml-2 w-4 h-4" />
@@ -34,15 +44,15 @@
       </div>
 
       <!-- Join Room Card -->
-      <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-        <div class="p-6">
-          <h2 class="text-2xl font-headline text-primary flex items-center">
+      <div class="bg-white border border-gray-300 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+        <div class="p-6 ">
+          <h2 class="font-semibold tracking-tight font-headline text-2xl text-primary flex items-center">
             <Users class="w-5 h-5 mr-2 text-primary" />
             {{ T.joinRoomTitle }}
           </h2>
-          <p class="text-gray-600">{{ T.joinRoomDescription }}</p>
+          <p class="text-sm text-muted-foreground">{{ T.joinRoomDescription }}</p>
         </div>
-        <div class="p-6">
+        <div class="p-6 pt-0">
           <form @submit.prevent="handleJoinRoom" class="space-y-4">
             <div>
               <label for="roomId" class="block text-sm text-foreground/80">{{ T.roomIdLabel }}</label>
@@ -57,8 +67,15 @@
             <button
               type="submit"
               :disabled="!roomIdToJoin.trim()"
-              class="w-full px-4 py-2 bg-secondary text-white rounded hover:bg-secondary/90 disabled:opacity-50"
-            >
+              class="inline-flex items-center justify-center gap-2 
+              whitespace-nowrap rounded-xl text-sm font-medium 
+              ring-offset-background transition-colors 
+              focus-visible:outline-none focus-visible:ring-2 
+              focus-visible:ring-ring focus-visible:ring-offset-2 
+              disabled:pointer-events-none disabled:opacity-50 
+              [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 
+              h-10 px-4 py-2 w-full 
+              bg-secondary hover:bg-secondary/90 text-secondary-foreground">
               {{ T.joinRoomButton }}
               <ArrowRight class="ml-2 w-4 h-4 inline" />
             </button>
@@ -75,14 +92,11 @@ import { useRouter } from 'vue-router';
 import { PlusCircle, ArrowRight, Users } from 'lucide-vue-next';
 import { useTranslations } from '../Translations/HomeTranslation';
 
-
-
 // Simulación de contexto de usuario
 const username = ref('');
 const isAuthenticated = true;
-const language = 'es';
 
-const T = useTranslations(language);
+const T = useTranslations;
 
 const roomIdToJoin = ref('');
 const router = useRouter();

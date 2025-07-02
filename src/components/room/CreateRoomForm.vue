@@ -124,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch,onMounted } from 'vue'
 import {
   SettingsIcon,
   ListOrderedIcon,
@@ -140,14 +140,14 @@ import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/fire
 import '../../firebase/config.js';
 
 const uiLanguage = 'en' // Replace with actual user language from context
-const username = 'Player' // Replace with actual username from context
+const username = ref(localStorage.getItem('username')); // Replace with actual username from context
 
-const T = useTranslations(uiLanguage);
+const T = useTranslations;
 
 const isCreating = ref(false)
 
 const settings = reactive({
-  roomName: `${username}'s Game`,
+  roomName: `${username.value}'s Game`,
   numberOfRounds: 3,
   timePerRound: 60,
   categories: T.value.defaultCategoriesPlaceholder
@@ -161,17 +161,13 @@ watch(
   (newLang) => {
     settings.language = 'English'
     settings.categories = T.value.defaultCategoriesPlaceholder
-    settings.roomName = `${username}'s Game`
+    settings.roomName = `${username.value}'s Game`
   }
 )
 const router = useRouter();
 
 const handleSubmit = async () => {
-  if (!username) {
-    alert('Username not available.')
-    return
-  }
-
+  
   isCreating.value = true
 
   const userId = localStorage.getItem('userId');
@@ -207,7 +203,6 @@ const handleSubmit = async () => {
         name: username,
         isAdmin: true,
         score: 0,
-        joinedAt: serverTimestamp(),
       },
     ],
     rounds: [],
@@ -216,13 +211,25 @@ const handleSubmit = async () => {
   try {
     const db = getFirestore();
     await addDoc(collection(db, 'rooms'), roomData);
-    alert(`Sala creada con éxito. ID: ${roomId}`)
+    // alert(`Sala creada con éxito. ID: ${roomId}`)
     router.push(`/lobby/${roomId}`)
   } catch (error) {
     console.error('Error al crear la sala:', error)
-    alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.')
+    // alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.')
   } finally {
     isCreating.value = false
   }
 }
+
+onMounted(() => {
+  const userId = localStorage.getItem('userId');
+  const storedUsername = localStorage.getItem('username');
+
+  if (!userId || !storedUsername) {
+    console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
+    router.replace('/login');
+  } else {
+    username.value = storedUsername;
+  }
+});
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-import Logos from '../components/Logos.vue'
+
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -18,7 +18,6 @@ onMounted(() => {
 
 <template>
   
-  <Logos/>
   <h1>Game</h1>
 </template>
 

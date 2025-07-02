@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import Logos from '../components/Logos.vue';
 
 const players = ref([
   { name: 'Jugador 1', isAdmin: true },
@@ -42,12 +41,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen p-6">
-    <Logos />
+  <div class="flex flex-col gap-6 min-h-screen p-6 ">
     <h1 class="text-4xl font-bold text-primary mb-4 text-center">Sala de Espera</h1>
 
+  <div class="flex flex-col gap-6 lg:flex-row">
     <!-- Configuración del Juego -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white rounded-lg border border-gray-300 shadow-lg p-6 w-full lg:w-1/3">
       <h2 class="text-2xl font-semibold text-primary mb-4">Ajustes del Juego</h2>
       <ul class="space-y-2">
         <li><strong>Rondas:</strong> {{ gameSettings.numberOfRounds }}</li>
@@ -59,19 +58,36 @@ onMounted(() => {
     </div>
 
     <!-- Lista de Jugadores -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white rounded-lg border border-gray-300 shadow-lg p-6 w-full lg:w-2/3">
       <h2 class="text-2xl font-semibold text-primary mb-4">Jugadores en la Sala</h2>
       <ul class="space-y-2">
-        <li v-for="(player, index) in players" :key="index" class="flex justify-between">
+
+        <li
+          v-for="(player, index) in players"
+          :key="index"
+          :class="[
+          'text-center py-3 px-4 rounded-xl',
+          player.isAdmin ? 'bg-secondary text-white font-semibold' : 'bg-background text-gray-800'
+          ]"
+          >
           <span>{{ player.name }}</span>
-          <span v-if="player.isAdmin" class="text-sm text-secondary">(Admin)</span>
+          <span v-if="player.isAdmin" class="text-sm text-white"> (Admin)</span>
         </li>
       </ul>
     </div>
+  </div>
 
-    <!-- Controles de Administrador -->
+      <!-- Controles de Administrador -->
     <div v-if="isAdmin" class="text-center mb-6">
-      <button @click="startGame" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90">
+      <button @click="startGame" class="inline-flex items-center justify-center gap-2 
+              whitespace-nowrap rounded-xl text-sm font-medium 
+              ring-offset-background transition-colors 
+              focus-visible:outline-none focus-visible:ring-2 
+              focus-visible:ring-ring focus-visible:ring-offset-2 
+              disabled:pointer-events-none disabled:opacity-50 
+              [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 
+              h-10 px-4 py-2 w-full 
+              bg-primary hover:bg-primary/90 text-white">
         Iniciar Juego
       </button>
     </div>
@@ -83,7 +99,15 @@ onMounted(() => {
 
     <!-- Botón para Salir de la Sala -->
     <div class="text-center">
-      <button @click="leaveRoom" class="px-4 py-2 bg-secondary text-white rounded hover:bg-secondary/90">
+      <button @click="leaveRoom" class="inline-flex items-center justify-center gap-2 
+              whitespace-nowrap rounded-xl text-sm font-medium 
+              ring-offset-background transition-colors 
+              focus-visible:outline-none focus-visible:ring-2 
+              focus-visible:ring-ring focus-visible:ring-offset-2 
+              disabled:pointer-events-none disabled:opacity-50 
+              [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 
+              h-10 px-4 py-2 w-full 
+              bg-secondary hover:bg-secondary/90 text-secondary-foreground">
         Salir de la Sala
       </button>
     </div>

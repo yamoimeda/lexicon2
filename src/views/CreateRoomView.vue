@@ -4,12 +4,12 @@
         import CreateRoomForm from '../components/room/CreateRoomForm.vue'; // Assuming a Vue component for the form
         import { useTranslations } from '../Translations/CreateRommTranslation';
         import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
-        
+        import { ArrowRight } from 'lucide-vue-next'
         // Dummy user context for now
         const isAuthenticated = ref(true); // Replace with actual auth state
         const language = ref('en'); // Replace with actual language state
         
-        const T = useTranslations(language);
+        const T = useTranslations;
         const router = useRouter();
         
         onMounted(() => {

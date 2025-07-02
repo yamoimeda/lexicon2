@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import { lenguage } from '../composables/GlobalVariables'
 
 const defaultCategories = {
   en: ['Name', 'Surname', 'Fruit', 'Color', 'Thing'],
@@ -59,6 +60,5 @@ const translations = {
       }
 };
 
-export function useTranslations(language: keyof typeof translations = 'en') {
-  return computed(() => translations[language] || translations.en);
-}
+export const useTranslations = computed(() => translations[lenguage.value] || translations.en);
+

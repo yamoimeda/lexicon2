@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 import '../firebase/config.js';
-import Logos from '../components/Logos.vue'
 
 const username = ref('');
 const router = useRouter();

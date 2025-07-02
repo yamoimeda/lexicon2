@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import { lenguage } from '../composables/GlobalVariables'
 
 const translations = {
   en: {
@@ -31,7 +32,5 @@ const translations = {
   }
 };
 
-export function useTranslations(language: keyof typeof translations = 'en') {
-  const lang = localStorage.getItem('language') || language;
-  return computed(() => translations[lang] || translations.en);
-}
+export const useTranslations = computed(() => translations[lenguage.value] || translations.en);
+
