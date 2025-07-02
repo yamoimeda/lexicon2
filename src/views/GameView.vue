@@ -13,7 +13,7 @@ const router = useRouter();
 const route = useRoute();
 const db = getFirestore();
 
-const roomId = route.params.id; // Extraer el ID de la sala desde la URL
+const roomId = route.params.roomId; // Extraer el ID de la sala desde la URL
 const roomData = ref(null);
 
 const fetchRoomData = async () => {
