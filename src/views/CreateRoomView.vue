@@ -70,7 +70,7 @@
             const db = getFirestore();
             await addDoc(collection(db, 'rooms'), roomData);
             alert(`Sala creada con éxito. ID: ${roomId}`);
-            router.push(`/lobby/${roomId}`);
+            router.push(`/game/${roomId}`);
           } catch (error) {
             console.error('Error al crear la sala:', error);
             alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.');

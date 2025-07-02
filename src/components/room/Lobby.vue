@@ -42,8 +42,7 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-6 min-h-screen p-6 ">
-    <h1 class="text-4xl font-bold text-primary mb-4 text-center">Sala de Espera</h1>
-
+   
   <div class="flex flex-col gap-6 lg:flex-row">
     <!-- Configuración del Juego -->
     <div class="bg-white rounded-lg border border-gray-300 shadow-lg p-6 w-full lg:w-1/3">
@@ -97,34 +96,7 @@ onMounted(() => {
       Esperando que el admin inicie el juego...
     </div>
 
-    <!-- Botón para Salir de la Sala -->
-    <div class="text-center">
-      <button @click="leaveRoom" class="inline-flex items-center justify-center gap-2 
-              whitespace-nowrap rounded-xl text-sm font-medium 
-              ring-offset-background transition-colors 
-              focus-visible:outline-none focus-visible:ring-2 
-              focus-visible:ring-ring focus-visible:ring-offset-2 
-              disabled:pointer-events-none disabled:opacity-50 
-              [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 
-              h-10 px-4 py-2 w-full 
-              bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-        Salir de la Sala
-      </button>
-    </div>
+    
   </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>

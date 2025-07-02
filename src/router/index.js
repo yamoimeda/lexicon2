@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
     import HomeView from '../views/HomeView.vue';
     import GameView from '../views/GameView.vue';
     import CreateRoomView from '../views/CreateRoomView.vue';
-    import LobbyView from '../views/LobbyView.vue';
     import LogInView from '../views/LogInView.vue';
     import AppLayout from '../layout/AppLayout.vue';
 
@@ -24,20 +23,10 @@ import { createRouter, createWebHistory } from 'vue-router';
               component: CreateRoomView,
             },
             {
-              path: '/Lobby',
-              name: 'Lobby',
-              component: LobbyView,
-            },
-            {
-              path: '/lobby/:roomId',
-              name: 'RoomLobby',
-              component: LobbyView,
-              props: true
-            },
-            {
-              path: '/Game',
-              name: 'Game',
+              path: '/game/:roomId',
+              name: 'GameView',
               component: GameView,
+              props: true
             },
             {
               path: '/login',
