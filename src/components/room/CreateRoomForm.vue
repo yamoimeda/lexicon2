@@ -136,7 +136,7 @@ import {
 } from 'lucide-vue-next'
 import { useTranslations } from '../../Translations/CreateRommTranslation';
 import { useRouter } from 'vue-router';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, collection, setDoc, serverTimestamp, getDocs, query, where, doc } from 'firebase/firestore';
 import '../../firebase/config.js';
 
 const uiLanguage = 'en' // Replace with actual user language from context
@@ -220,7 +220,6 @@ const handleSubmit = async () => {
         name: username,
         isAdmin: true,
         score: 0,
-        joinedAt: serverTimestamp(),
       },
     ],
     rounds: [],
