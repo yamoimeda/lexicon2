@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import RoomNotFound from '../components/room/RoomNotFound.vue';
 import Waiting from '../components/room/Waiting.vue';
@@ -8,22 +8,27 @@ import Playing from '../components/room/Playing.vue';
 import Reviewing from '../components/room/Reviewing.vue';
 import Final from '../components/room/Final.vue';
 
+// Definir props
+const props = defineProps({
+  roomId: {
+    type: String,
+    required: true
+  }
+});
+
 const isAdmin = ref(true); // Cambiar según el usuario actual
 const router = useRouter();
-const route = useRoute();
 const db = getFirestore();
-
-const roomId = route.params.roomId; // Extraer el ID de la sala desde la URL
 const roomData = ref(null);
 
 const fetchRoomData = async () => {
   try {
-    if (!roomId) {
+    if (!props.roomId) {
       console.error('El ID de la sala no está definido.');
       return;
     }
 
-    const roomRef = doc(db, 'rooms', roomId);
+    const roomRef = doc(db, 'rooms', props.roomId);
     const roomSnapshot = await getDoc(roomRef);
 
     if (roomSnapshot.exists()) {
@@ -75,6 +80,13 @@ onMounted(() => {
     fetchRoomData();
   }
 });
+
+// Exponer la API pública del componente
+defineExpose({
+  fetchRoomData,
+  leaveRoom,
+  roomData
+});
 </script>
 
 <template>
@@ -83,7 +95,7 @@ onMounted(() => {
 
     <template v-else>
       <h1 class="text-4xl font-bold text-primary mb-4 text-center">
-        {{ $t('Sala') }}: {{ roomId }}
+        {{ $t('Sala') }}: {{ props.roomId }}
       </h1>
 
       <RoomNotFound v-if="!roomData" />
