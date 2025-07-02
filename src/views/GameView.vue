@@ -89,6 +89,7 @@ defineExpose({
   leaveRoom,
   roomData
 });
+
 </script>
 
 <template>
@@ -97,12 +98,12 @@ defineExpose({
 
     <template v-else>
       <h1 class="text-4xl font-bold text-primary mb-4 text-center">
-        ID de sala: {{ props.roomId }}
+        {{roomData.settings.roomName }} ID: {{ props.roomId }}
       </h1>
 
       <RoomNotFound v-if="!roomData" />
 
-      <component v-else :is="getComponentByGameStatus(roomData.gameStatus)" />
+      <component v-else :is="getComponentByGameStatus(roomData.settings.gameStatus)" />
     </template>
 
     <!-- Botón para Salir de la Sala -->

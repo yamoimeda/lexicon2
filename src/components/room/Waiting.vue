@@ -43,7 +43,7 @@ defineExpose({});
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 min-h-screen p-6 ">
+  <div class="flex flex-col gap-6 min-h-screen">
    
   <div class="flex flex-col gap-6 lg:flex-row">
     <!-- Configuración del Juego -->
