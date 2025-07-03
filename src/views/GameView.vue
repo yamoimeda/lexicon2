@@ -56,21 +56,6 @@ const leaveRoom = () => {
   router.push('/');
 };
 
-const getComponentByGameStatus = (status) => {
-  switch (status) {
-    case 'waiting':
-      return Waiting;
-    case 'playing':
-      return Playing;
-    case 'reviewing':
-      return Reviewing;
-    case 'final':
-      return Final;
-    default:
-      return null;
-  }
-};
-
 onMounted(() => {
   const userId = localStorage.getItem('userId');
   const username = localStorage.getItem('username');
@@ -103,9 +88,23 @@ defineExpose({
 
       <RoomNotFound v-if="!roomData" />
 
-      <component 
-        v-else 
-        :is="getComponentByGameStatus(roomData.settings.gameStatus)" 
+      <Waiting
+        v-if="roomData.settings.gameStatus === 'waiting'"
+        :room-data="roomData"
+        :room-id="props.roomId"
+      />
+      <Playing
+        v-else-if="roomData.settings.gameStatus === 'playing'"
+        :room-data="roomData"
+        :room-id="props.roomId"
+      />
+      <Reviewing
+        v-else-if="roomData.settings.gameStatus === 'reviewing'"
+        :room-data="roomData"
+        :room-id="props.roomId"
+      />
+      <Final
+        v-else-if="roomData.settings.gameStatus === 'final'"
         :room-data="roomData"
         :room-id="props.roomId"
       />
