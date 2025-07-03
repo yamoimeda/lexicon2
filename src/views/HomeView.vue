@@ -91,6 +91,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { PlusCircle, ArrowRight, Users } from 'lucide-vue-next';
 import { useTranslations } from '../Translations/HomeTranslation';
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 // Simulación de contexto de usuario
 const username = ref('');
@@ -113,9 +114,40 @@ onMounted(() => {
   }
 });
 
-const handleJoinRoom = () => {
+const handleJoinRoom = async () => {
   if (roomIdToJoin.value.trim()) {
-    router.push(`/rooms/${roomIdToJoin.value.trim()}/lobby`);
+    const userId = localStorage.getItem('userId');
+    const username = localStorage.getItem('username');
+    if (!userId || !username) {
+      router.replace('/login');
+      return;
+    }
+    // Insertar usuario en la sala en Firestore
+    try {
+      const firestore = getFirestore();
+      const roomRef = doc(firestore, 'rooms', roomIdToJoin.value.trim());
+      const roomSnap = await getDoc(roomRef);
+      if (roomSnap.exists()) {
+        const data = roomSnap.data();
+        const alreadyJoined = (data.players || []).some((p) => p.id === userId);
+        if (!alreadyJoined) {
+          await updateDoc(roomRef, {
+            players: arrayUnion({
+              id: userId,
+              name: username,
+              isAdmin: false,
+              score: 0,
+            })
+          });
+        }
+        router.push(`/game/${roomIdToJoin.value.trim()}`);
+      } else {
+        alert('La sala no existe.');
+      }
+    } catch (e) {
+      console.error('Error al unirse a la sala:', e);
+      alert('No se pudo unir a la sala.');
+    }
   }
 };
 </script>

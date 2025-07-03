@@ -103,7 +103,12 @@ defineExpose({
 
       <RoomNotFound v-if="!roomData" />
 
-      <component v-else :is="getComponentByGameStatus(roomData.settings.gameStatus)" />
+      <component 
+        v-else 
+        :is="getComponentByGameStatus(roomData.settings.gameStatus)" 
+        :room-data="roomData"
+        :room-id="props.roomId"
+      />
     </template>
 
     <!-- Botón para Salir de la Sala -->

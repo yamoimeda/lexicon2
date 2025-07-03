@@ -1,27 +1,61 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { getFirestore, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 
-const players = ref([
-  { name: 'Jugador 1', isAdmin: true },
-  { name: 'Jugador 2', isAdmin: false },
-  { name: 'Jugador 3', isAdmin: false },
-]);
-
-const gameSettings = ref({
-  numberOfRounds: 3,
-  timePerRound: 60,
-  language: 'Español',
-  categories: ['Nombre', 'Apellido', 'Fruta', 'Color', 'Cosa'],
-  endRoundOnFirstSubmit: false,
+// Definir props
+const props = defineProps({
+  roomData: {
+    type: Object,
+    required: true
+  },
+  roomId: {
+    type: String,
+    required: true
+  }
 });
 
-const isAdmin = ref(true); // Cambiar según el usuario actual
 const router = useRouter();
+const db = getFirestore();
+const players = ref([]);
+const gameSettings = ref({});
+const currentUserId = ref(localStorage.getItem('userId'));
+let unsubscribe = null;
 
-const startGame = () => {
-  console.log('Iniciando el juego...');
-  router.push('/game');
+// Computed para verificar si el usuario actual es admin
+const isAdmin = computed(() => {
+  const currentPlayer = players.value.find(player => player.id === currentUserId.value);
+  return currentPlayer ? currentPlayer.isAdmin : false;
+});
+
+// Escuchar cambios en tiempo real de la sala
+const listenToRoomChanges = () => {
+  const roomRef = doc(db, 'rooms', props.roomId);
+  
+  unsubscribe = onSnapshot(roomRef, (doc) => {
+    if (doc.exists()) {
+      const data = doc.data();
+      players.value = data.players || [];
+      gameSettings.value = data.settings || {};
+      console.log('Datos de la sala actualizados:', data);
+    }
+  }, (error) => {
+    console.error('Error escuchando cambios de la sala:', error);
+  });
+};
+
+const startGame = async () => {
+  if (!isAdmin.value) return;
+  
+  try {
+    const roomRef = doc(db, 'rooms', props.roomId);
+    await updateDoc(roomRef, {
+      'settings.gameStatus': 'playing'
+    });
+    console.log('Juego iniciado');
+  } catch (error) {
+    console.error('Error al iniciar el juego:', error);
+  }
 };
 
 const leaveRoom = () => {
@@ -35,11 +69,31 @@ onMounted(() => {
 
   if (!userId || !username) {
     console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
-    router.replace('/login');
+    router.push('/login');
+    return;
+  }
+
+  // Inicializar datos desde props
+  if (props.roomData) {
+    players.value = props.roomData.players || [];
+    gameSettings.value = props.roomData.settings || {};
+  }
+
+  // Escuchar cambios en tiempo real
+  listenToRoomChanges();
+});
+
+onUnmounted(() => {
+  if (unsubscribe) {
+    unsubscribe();
   }
 });
 
-defineExpose({});
+defineExpose({
+  players,
+  gameSettings,
+  isAdmin
+});
 </script>
 
 <template>
