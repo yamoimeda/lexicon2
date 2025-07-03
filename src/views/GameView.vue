@@ -178,36 +178,36 @@ defineExpose({
 
     <!-- Contenido principal cuando los datos están cargados -->
     <template v-else>
-      <!-- Cabecera moderna y elegante -->
+      <!-- Cabecera mejorada con bordes redondeados -->
       <div class="bg-white/95 backdrop-blur-sm border-b border-border/50 shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3 md:space-x-4">
               <!-- Logo/Icono del juego -->
-              <div class="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
-                <span class="text-white font-bold text-xl">🎯</span>
+              <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg">
+                <span class="text-white font-bold text-lg md:text-xl">🎯</span>
               </div>
               
-              <!-- Información de la sala con bordes redondeados -->
-              <div class="bg-muted/20 rounded-xl px-4 py-3 border border-border/30">
-                <h1 class="text-xl md:text-2xl font-bold text-foreground tracking-tight mb-1">
+              <!-- Información de la sala con bordes muy redondeados -->
+              <div class="bg-muted/20 rounded-2xl px-3 py-2 md:px-4 md:py-3 border border-border/30">
+                <h1 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground tracking-tight mb-1">
                   {{ roomData.settings.roomName }}
                 </h1>
-                <div class="flex items-center space-x-3 text-sm">
-                  <div class="flex items-center space-x-2 bg-white/80 rounded-lg px-3 py-1 border border-border/50">
-                    <span>🆔</span>
-                    <span class="font-mono font-bold text-base text-foreground">{{ props.roomId }}</span>
+                <div class="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm">
+                  <div class="flex items-center space-x-1 md:space-x-2 bg-white/80 rounded-xl px-2 py-1 md:px-3 border border-border/50">
+                    <span class="text-xs md:text-sm">🆔</span>
+                    <span class="font-mono font-bold text-sm md:text-base text-foreground">{{ props.roomId }}</span>
                   </div>
-                  <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                  <span class="hidden md:inline w-1 h-1 bg-muted-foreground rounded-full"></span>
                   <span class="flex items-center space-x-1 text-muted-foreground">
-                    <span>👥</span>
-                    <span class="font-medium">{{ roomData.players?.length || 0 }} jugadores</span>
+                    <span class="text-xs md:text-sm">👥</span>
+                    <span class="font-medium text-xs md:text-sm">{{ roomData.players?.length || 0 }}</span>
                   </span>
-                  <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                  <span class="hidden md:inline w-1 h-1 bg-muted-foreground rounded-full"></span>
                   <span class="flex items-center space-x-1 text-muted-foreground">
                     <span class="w-2 h-2 rounded-full animate-pulse"
                           :class="getStatusColor(roomData.settings.gameStatus)"></span>
-                    <span class="capitalize font-medium">{{ getStatusText(roomData.settings.gameStatus) }}</span>
+                    <span class="capitalize font-medium text-xs md:text-sm">{{ getStatusText(roomData.settings.gameStatus) }}</span>
                   </span>
                 </div>
               </div>
@@ -215,9 +215,9 @@ defineExpose({
 
             <!-- Botón de salir mejorado -->
             <button @click="leaveRoom" 
-                    class="hidden md:inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30">
+                    class="hidden md:inline-flex items-center space-x-2 px-3 py-2 md:px-4 rounded-2xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30">
               <span>🚪</span>
-              <span>Salir</span>
+              <span class="hidden lg:inline">Salir</span>
             </button>
           </div>
         </div>
@@ -268,16 +268,16 @@ defineExpose({
       </div>
 
       <!-- Botón flotante para salir en móviles -->
-      <div class="md:hidden fixed bottom-6 right-6 z-50">
+      <div class="md:hidden fixed bottom-4 right-4 z-50">
         <button @click="leaveRoom" 
-                class="w-14 h-14 bg-white/90 backdrop-blur-sm shadow-xl rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white border border-border/50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/30">
-          <span class="text-xl">🚪</span>
+                class="w-12 h-12 bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white border border-border/50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/30">
+          <span class="text-lg">🚪</span>
         </button>
       </div>
 
       <!-- Indicador de conexión -->
-      <div class="fixed bottom-6 left-6 z-40">
-        <div class="bg-white/90 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg border border-border/50 flex items-center space-x-2">
+      <div class="fixed bottom-4 left-4 z-40">
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl px-2 py-1 md:px-3 md:py-2 shadow-lg border border-border/50 flex items-center space-x-1 md:space-x-2">
           <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <span class="text-xs font-medium text-muted-foreground">En vivo</span>
         </div>

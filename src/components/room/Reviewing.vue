@@ -162,19 +162,19 @@ const validateWord = (word) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-6">
-    <div class="max-w-7xl mx-auto space-y-6">
-      <!-- Cabecera moderna -->
-      <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
-        <div class="bg-gradient-to-r from-accent to-accent/80 text-white p-6">
+  <div class="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background p-3 md:p-6">
+    <div class="max-w-7xl mx-auto space-y-4 md:space-y-6">
+      <!-- Cabecera moderna y responsiva -->
+      <div class="bg-white/95 backdrop-blur-sm shadow-xl rounded-xl md:rounded-2xl border border-border/50 overflow-hidden">
+        <div class="bg-gradient-to-r from-accent via-accent/95 to-accent/80 text-white p-4 md:p-6">
           <div class="text-center">
-            <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+            <h1 class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight mb-1 md:mb-2">
               📊 Revisión de Respuestas
             </h1>
-            <p class="text-accent-foreground/80 text-lg font-medium">
+            <p class="text-accent-foreground/90 text-sm md:text-base lg:text-lg font-medium">
               Ronda {{ currentRound }} de {{ numberOfRounds }}
             </p>
-            <p class="text-accent-foreground/70 text-sm mt-2">
+            <p class="text-accent-foreground/80 text-xs md:text-sm mt-1 md:mt-2">
               {{ isAdmin ? 'Revisa y valida las respuestas de todos los jugadores' : 'Tus respuestas de esta ronda' }}
             </p>
           </div>
@@ -182,20 +182,20 @@ const validateWord = (word) => {
       </div>
 
       <!-- Vista para jugadores no-admin: solo sus respuestas -->
-      <div v-if="!isAdmin" class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-6">
-        <div class="flex items-center space-x-3 mb-6">
-          <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
-          <h2 class="text-2xl font-bold text-foreground">Tus Respuestas</h2>
+      <div v-if="!isAdmin" class="bg-white/95 backdrop-blur-sm shadow-xl rounded-xl md:rounded-2xl border border-border/50 p-4 md:p-6">
+        <div class="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
+          <div class="w-3 h-3 md:w-4 md:h-4 bg-blue-500 rounded-full animate-pulse"></div>
+          <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground">Tus Respuestas</h2>
         </div>
         
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <div v-for="category in categories" :key="category" 
-               class="bg-gradient-to-br from-muted/30 to-muted/10 border-2 border-border rounded-xl p-4 hover:shadow-md transition-all duration-200">
-            <div class="flex items-center space-x-2 mb-3">
+               class="bg-gradient-to-br from-muted/40 to-muted/20 border-2 border-border rounded-lg md:rounded-xl p-3 md:p-4 hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+            <div class="flex items-center space-x-2 mb-2 md:mb-3">
               <div class="w-2 h-2 bg-primary rounded-full"></div>
-              <h3 class="font-bold text-foreground text-sm uppercase tracking-wide">{{ category }}</h3>
+              <h3 class="font-bold text-foreground text-xs md:text-sm uppercase tracking-wide">{{ category }}</h3>
             </div>
-            <p class="text-lg font-semibold text-foreground bg-white rounded-lg p-3 border border-border/50">
+            <p class="text-sm md:text-base lg:text-lg font-semibold text-foreground bg-white rounded-lg p-2 md:p-3 border border-border/50 shadow-sm">
               {{ currentUserSubmissions[category] || 'Sin respuesta' }}
             </p>
           </div>
@@ -203,64 +203,66 @@ const validateWord = (word) => {
       </div>
 
       <!-- Vista para admin: todas las respuestas agrupadas por categoría -->
-      <div v-else class="space-y-6">
+      <div v-else class="space-y-4 md:space-y-6">
         <div v-for="category in categories" :key="category" 
-             class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
+             class="bg-white/95 backdrop-blur-sm shadow-xl rounded-xl md:rounded-2xl border border-border/50 overflow-hidden">
           
           <!-- Cabecera de la categoría -->
-          <div class="bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border/50 p-6">
-            <div class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-primary rounded-full"></div>
-              <h2 class="text-2xl font-bold text-primary">{{ category }}</h2>
-              <div class="text-sm text-muted-foreground font-medium">
+          <div class="bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 border-b border-border/50 p-4 md:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div class="flex items-center space-x-2 md:space-x-3">
+                <div class="w-2 h-2 md:w-3 md:h-3 bg-primary rounded-full animate-pulse"></div>
+                <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-primary">{{ category }}</h2>
+              </div>
+              <div class="text-xs md:text-sm text-muted-foreground font-medium bg-muted/30 px-3 py-1 rounded-full">
                 {{ Object.keys(groupedAnswers[category] || {}).length }} respuesta(s) única(s)
               </div>
             </div>
           </div>
           
           <!-- Respuestas agrupadas -->
-          <div class="p-6">
-            <div class="space-y-4">
+          <div class="p-4 md:p-6">
+            <div class="space-y-3 md:space-y-4">
               <div v-for="(playersWithAnswer, answer) in groupedAnswers[category]" 
                    :key="answer || 'empty'" 
-                   class="border-2 rounded-xl p-4 transition-all duration-200 hover:shadow-md"
+                   class="border-2 rounded-lg md:rounded-xl p-3 md:p-4 transition-all duration-300 hover:shadow-md hover:scale-[1.01]"
                    :class="isAnswerValid(category, answer) 
                      ? 'bg-green-50 border-green-200 hover:bg-green-100' 
                      : 'bg-red-50 border-red-200 hover:bg-red-100'">
                 
-                <div class="flex justify-between items-start">
+                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-3">
                   <div class="flex-1">
-                    <div class="flex items-center space-x-3 mb-3">
-                      <div class="text-2xl font-bold text-foreground bg-white rounded-lg px-3 py-1 border border-border/50">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-3 gap-2">
+                      <div class="text-lg md:text-xl lg:text-2xl font-bold text-foreground bg-white rounded-lg px-3 py-2 border border-border/50 shadow-sm">
                         {{ answer || 'Sin respuesta' }}
                       </div>
                       <span v-if="answer && !validateWord(answer)" 
-                            class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium border border-yellow-200">
+                            class="inline-flex items-center px-2 md:px-3 py-1 bg-yellow-100 text-yellow-800 text-xs md:text-sm rounded-full font-medium border border-yellow-200">
                         ⚠️ No empieza con {{ settings.currentLetter }}
                       </span>
                     </div>
                     
-                    <div class="flex items-center space-x-4 mb-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-3 gap-2">
                       <div class="flex -space-x-2">
                         <div v-for="player in playersWithAnswer.slice(0, 3)" 
                              :key="player.id"
-                             class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-sm">
+                             class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-sm">
                           {{ player.name.charAt(0).toUpperCase() }}
                         </div>
                         <div v-if="playersWithAnswer.length > 3"
-                             class="w-8 h-8 rounded-full bg-muted-foreground text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-sm">
+                             class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-muted-foreground text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-sm">
                           +{{ playersWithAnswer.length - 3 }}
                         </div>
                       </div>
-                      <div class="text-sm text-muted-foreground">
+                      <div class="text-xs md:text-sm text-muted-foreground">
                         <span class="font-medium">{{ playersWithAnswer.length }} jugador(es):</span>
-                        {{ playersWithAnswer.map(p => p.name).join(', ') }}
+                        <span class="block sm:inline sm:ml-1">{{ playersWithAnswer.map(p => p.name).join(', ') }}</span>
                       </div>
                     </div>
                     
-                    <div class="flex items-center space-x-4">
-                      <div class="bg-white rounded-lg px-3 py-1 border border-border/50">
-                        <span class="text-lg font-bold text-primary">{{ getFinalPoints(category, answer) }}</span>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 gap-2">
+                      <div class="bg-white rounded-lg px-3 py-2 border border-border/50 shadow-sm">
+                        <span class="text-base md:text-lg font-bold text-primary">{{ getFinalPoints(category, answer) }}</span>
                         <span class="text-xs text-muted-foreground ml-1">puntos</span>
                       </div>
                       <span v-if="answer" class="text-xs text-muted-foreground">
@@ -271,7 +273,7 @@ const validateWord = (word) => {
                   
                   <button v-if="answer" 
                           @click="toggleAnswerValidation(category, answer)"
-                          class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-4"
+                          class="px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all duration-300 hover:shadow-md focus:outline-none focus:ring-4 hover:scale-[1.02] lg:mt-0 mt-3 w-full lg:w-auto"
                           :class="isAnswerValid(category, answer) 
                             ? 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-300' 
                             : 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-300'">
@@ -281,39 +283,39 @@ const validateWord = (word) => {
               </div>
               
               <div v-if="Object.keys(groupedAnswers[category] || {}).length === 0" 
-                   class="text-center py-8 text-muted-foreground">
-                <div class="text-4xl mb-2">📝</div>
-                <p class="font-medium">No hay respuestas para esta categoría</p>
+                   class="text-center py-6 md:py-8 text-muted-foreground">
+                <div class="text-3xl md:text-4xl mb-2">📝</div>
+                <p class="font-medium text-sm md:text-base">No hay respuestas para esta categoría</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Resumen de puntos mejorado -->
-        <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
-          <div class="bg-gradient-to-r from-blue-500/10 to-blue-400/5 border-b border-border/50 p-6">
-            <div class="flex items-center space-x-3">
-              <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <h3 class="text-2xl font-bold text-foreground">Resumen de Puntos</h3>
+        <!-- Resumen de puntos mejorado y responsivo -->
+        <div class="bg-white/95 backdrop-blur-sm shadow-xl rounded-xl md:rounded-2xl border border-border/50 overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-500/15 via-blue-400/10 to-blue-500/5 border-b border-border/50 p-4 md:p-6">
+            <div class="flex items-center space-x-2 md:space-x-3">
+              <div class="w-2 h-2 md:w-3 md:h-3 bg-blue-500 rounded-full animate-pulse"></div>
+              <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground">Resumen de Puntos</h3>
             </div>
           </div>
           
-          <div class="p-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="p-4 md:p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               <div v-for="player in players" :key="player.id" 
-                   class="bg-gradient-to-br from-muted/20 to-muted/10 rounded-xl p-4 border-2 border-border hover:shadow-md transition-all duration-200">
-                <div class="flex items-center space-x-3 mb-3">
-                  <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm">
+                   class="bg-gradient-to-br from-muted/30 to-muted/15 rounded-lg md:rounded-xl p-3 md:p-4 border-2 border-border hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                <div class="flex items-center space-x-2 md:space-x-3 mb-3">
+                  <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-xs md:text-sm shadow-md">
                     {{ player.name.charAt(0).toUpperCase() }}
                   </div>
                   <div>
-                    <h4 class="font-bold text-foreground">{{ player.name }}</h4>
+                    <h4 class="font-bold text-foreground text-sm md:text-base">{{ player.name }}</h4>
                     <p class="text-xs text-muted-foreground">Puntos actuales: {{ player.score || 0 }}</p>
                   </div>
                 </div>
-                <div class="bg-white rounded-lg p-3 border border-border/50">
+                <div class="bg-white rounded-lg p-2 md:p-3 border border-border/50 shadow-sm">
                   <div class="text-center">
-                    <div class="text-2xl font-bold text-green-600">
+                    <div class="text-lg md:text-xl lg:text-2xl font-bold text-green-600">
                       +{{ categories.reduce((total, category) => {
                         const answer = submissions[player.id]?.[category]?.toLowerCase().trim() || '';
                         return total + getFinalPoints(category, answer);
@@ -328,38 +330,40 @@ const validateWord = (word) => {
         </div>
       </div>
 
-      <!-- Botones de acción mejorados -->
+      <!-- Botones de acción mejorados y responsivos -->
       <div class="text-center">
-        <div v-if="isAdmin" class="space-y-4">
-          <div class="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-border/50">
-            <p class="text-sm text-muted-foreground font-medium mb-4">
+        <div v-if="isAdmin" class="space-y-3 md:space-y-4">
+          <div class="bg-white/95 backdrop-blur-sm rounded-lg md:rounded-xl p-3 md:p-4 border border-border/50">
+            <p class="text-xs md:text-sm text-muted-foreground font-medium">
               💡 Revisa todas las respuestas y marca como válidas/inválidas antes de continuar
             </p>
           </div>
           
           <button @click="continueGame" 
                   :disabled="isStartingNextRound"
-                  class="inline-flex items-center space-x-3 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-primary/30">
+                  class="inline-flex items-center space-x-2 md:space-x-3 bg-gradient-to-r from-primary via-primary/95 to-primary/90 hover:from-primary/95 hover:via-primary hover:to-primary text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-primary/30 transform hover:scale-[1.02] disabled:hover:scale-100">
             <span v-if="isStartingNextRound">
-              <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+              <div class="animate-spin rounded-full h-4 w-4 md:h-5 md:w-5 border-2 border-white border-t-transparent"></div>
             </span>
-            <span v-else-if="isLastRound">🏁</span>
-            <span v-else>🚀</span>
+            <span v-else-if="isLastRound" class="text-lg md:text-xl">🏁</span>
+            <span v-else class="text-lg md:text-xl">🚀</span>
             
-            <span v-if="isStartingNextRound">Procesando...</span>
-            <span v-else-if="isLastRound">Finalizar Juego</span>
-            <span v-else>Iniciar Siguiente Ronda</span>
+            <span class="text-sm md:text-base lg:text-lg">
+              <span v-if="isStartingNextRound">Procesando...</span>
+              <span v-else-if="isLastRound">Finalizar Juego</span>
+              <span v-else>Iniciar Siguiente Ronda</span>
+            </span>
           </button>
         </div>
         
-        <div v-else class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 border border-border/50">
-          <div class="animate-pulse mb-4">
-            <div class="w-16 h-16 bg-primary/20 rounded-full mx-auto flex items-center justify-center">
-              <div class="text-2xl">⏳</div>
+        <div v-else class="bg-white/95 backdrop-blur-sm rounded-xl md:rounded-2xl p-6 md:p-8 border border-border/50 max-w-md mx-auto">
+          <div class="animate-pulse mb-3 md:mb-4">
+            <div class="w-12 h-12 md:w-16 md:h-16 bg-primary/20 rounded-full mx-auto flex items-center justify-center">
+              <div class="text-xl md:text-2xl">⏳</div>
             </div>
           </div>
-          <h3 class="text-lg font-bold text-foreground mb-2">Esperando al administrador</h3>
-          <p class="text-muted-foreground font-medium">El administrador está revisando las respuestas...</p>
+          <h3 class="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Esperando al administrador</h3>
+          <p class="text-muted-foreground font-medium text-sm md:text-base">El administrador está revisando las respuestas...</p>
         </div>
       </div>
     </div>

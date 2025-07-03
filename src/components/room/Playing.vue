@@ -193,7 +193,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-6">
+  <div class="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background p-3 md:p-6">
     <!-- Loader -->
     <div v-if="isLoading" class="flex justify-center items-center h-full pt-10">
       <div class="flex flex-col items-center space-y-4">
@@ -204,27 +204,27 @@ defineExpose({
 
     <!-- Estado: jugando -->
     <div v-else-if="isPlaying" class="max-w-7xl mx-auto">
-      <div class="grid lg:grid-cols-3 gap-6 lg:gap-8">
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Card principal del juego -->
-          <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
+      <div class="grid lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+        <div class="lg:col-span-2 space-y-4 md:space-y-6">
+          <!-- Card principal del juego - mejorada -->
+          <div class="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
             <!-- Cabecera elegante con gradiente -->
-            <div class="bg-gradient-to-r from-primary to-primary/80 text-white p-6">
-              <div class="flex justify-between items-center">
+            <div class="bg-gradient-to-r from-primary via-primary/95 to-primary/80 text-white p-4 md:p-6">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                 <div>
-                  <h1 class="text-2xl md:text-3xl font-bold tracking-tight">
+                  <h1 class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
                     Ronda {{ currentRound }}
                   </h1>
-                  <p class="text-primary-foreground/80 text-sm font-medium">
+                  <p class="text-primary-foreground/90 text-sm font-medium">
                     de {{ settings.numberOfRounds }} rondas
                   </p>
                 </div>
                 <div class="flex items-center space-x-4">
-                  <div class="text-right">
-                    <div class="text-xs font-medium text-primary-foreground/70 uppercase tracking-wider">
+                  <div class="text-center sm:text-right">
+                    <div class="text-xs font-medium text-primary-foreground/80 uppercase tracking-wider">
                       Tiempo restante
                     </div>
-                    <div class="text-3xl font-bold tabular-nums" 
+                    <div class="text-2xl md:text-3xl font-bold tabular-nums" 
                          :class="timeLeft <= 10 ? 'text-red-100 animate-pulse' : 'text-white'">
                       {{ Math.floor(timeLeft / 60) }}:{{ String(timeLeft % 60).padStart(2, '0') }}
                     </div>
@@ -233,13 +233,13 @@ defineExpose({
               </div>
             </div>
 
-            <!-- Sección de la letra actual -->
-            <div class="px-6 pt-6">
-              <div class="text-center mb-8 p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border border-primary/20">
-                <p class="text-sm font-semibold text-primary/80 mb-2 uppercase tracking-widest">
+            <!-- Sección de la letra actual - mejorada -->
+            <div class="px-4 md:px-6 pt-4 md:pt-6">
+              <div class="text-center mb-6 md:mb-8 p-4 md:p-6 bg-gradient-to-br from-primary/8 to-primary/15 rounded-2xl border border-primary/25 shadow-inner">
+                <p class="text-xs md:text-sm font-semibold text-primary/90 mb-2 uppercase tracking-widest">
                   Letra actual
                 </p>
-                <div class="text-8xl md:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
+                <div class="text-6xl md:text-8xl lg:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
                   {{ currentLetter }}
                 </div>
                 <p class="text-xs text-muted-foreground mt-2 font-medium">
@@ -247,10 +247,10 @@ defineExpose({
                 </p>
               </div>
 
-              <!-- Formulario mejorado -->
-              <div class="pb-6">
-                <form @submit.prevent="handleSubmit" class="space-y-6">
-                  <div class="grid gap-4">
+              <!-- Formulario mejorado y más responsivo -->
+              <div class="pb-4 md:pb-6">
+                <form @submit.prevent="handleSubmit" class="space-y-4 md:space-y-6">
+                  <div class="grid gap-3 md:gap-4">
                     <div v-for="submission in wordSubmissions" :key="submission.category" 
                          class="group">
                       <label :for="submission.category" 
@@ -263,7 +263,7 @@ defineExpose({
                         @input="handleWordChange(submission.category, $event.target.value)"
                         type="text"
                         :placeholder="'Palabra con ' + currentLetter + '...'"
-                        class="flex h-12 w-full rounded-xl border-2 border-border bg-white px-4 py-3 text-base font-medium text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-all duration-200"
+                        class="flex h-12 w-full rounded-xl border-2 border-border bg-white px-4 py-3 text-base font-medium text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-all duration-200 hover:border-border/80"
                         :disabled="isSubmitting || hasSubmitted || timeLeft === 0"
                       />
                     </div>
@@ -272,7 +272,7 @@ defineExpose({
                   <button
                     type="submit"
                     :disabled="isSubmitting || hasSubmitted || timeLeft === 0"
-                    class="w-full h-12 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-primary/30"
+                    class="w-full h-12 md:h-14 bg-gradient-to-r from-primary via-primary/95 to-primary/90 hover:from-primary/95 hover:via-primary hover:to-primary text-primary-foreground font-bold text-base md:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-primary/30 transform hover:scale-[1.02] disabled:hover:scale-100"
                   >
                     <span v-if="hasSubmitted" class="flex items-center justify-center space-x-2">
                       <span>✅</span>
@@ -297,27 +297,32 @@ defineExpose({
           </div>
         </div>
 
-        <!-- Panel lateral mejorado -->
-        <div class="lg:col-span-1 space-y-6">
-          <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-6">
-            <div class="flex items-center space-x-2 mb-6">
-              <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <h2 class="text-xl font-bold text-foreground">Jugadores en vivo</h2>
+        <!-- Panel lateral mejorado y más responsivo -->
+        <div class="lg:col-span-1 space-y-4 md:space-y-6">
+          <div class="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-4 md:p-6">
+            <div class="flex items-center justify-between mb-4 md:mb-6">
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 md:w-3 md:h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <h2 class="text-lg md:text-xl font-bold text-foreground">Jugadores en vivo</h2>
+              </div>
+              <span class="text-xs md:text-sm text-muted-foreground font-medium bg-muted/30 px-2 py-1 rounded-full">
+                {{ players.length }}
+              </span>
             </div>
             
-            <div class="space-y-3">
+            <div class="space-y-2 md:space-y-3">
               <div v-for="player in players" :key="player.id" 
-                   class="flex justify-between items-center p-4 rounded-xl transition-all duration-200"
+                   class="flex justify-between items-center p-3 md:p-4 rounded-xl transition-all duration-300 hover:scale-[1.02]"
                    :class="currentRoomData.submissions?.[player.id] 
                      ? 'bg-green-50 border-2 border-green-200 shadow-sm' 
-                     : 'bg-muted/30 border-2 border-transparent hover:bg-muted/50'">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                     : 'bg-muted/40 border-2 border-transparent hover:bg-muted/60'">
+                <div class="flex items-center space-x-2 md:space-x-3">
+                  <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm shadow-md"
                        :class="currentRoomData.submissions?.[player.id] ? 'bg-green-500' : 'bg-muted-foreground'">
                     {{ player.name.charAt(0).toUpperCase() }}
                   </div>
                   <div>
-                    <span class="font-semibold text-foreground block">{{ player.name }}</span>
+                    <span class="font-semibold text-foreground block text-sm md:text-base">{{ player.name }}</span>
                     <span v-if="currentRoomData.submissions?.[player.id]" 
                           class="text-xs text-green-600 font-medium flex items-center space-x-1">
                       <span>✓</span>
@@ -336,28 +341,28 @@ defineExpose({
             </div>
           </div>
 
-          <!-- Progreso de la partida -->
-          <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-6">
-            <h3 class="text-lg font-bold text-foreground mb-4">Progreso del juego</h3>
-            <div class="space-y-4">
+          <!-- Progreso de la partida - mejorado -->
+          <div class="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-4 md:p-6">
+            <h3 class="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">Progreso del juego</h3>
+            <div class="space-y-3 md:space-y-4">
               <div>
                 <div class="flex justify-between text-sm font-medium text-muted-foreground mb-2">
                   <span>Ronda actual</span>
                   <span>{{ currentRound }}/{{ settings.numberOfRounds }}</span>
                 </div>
-                <div class="w-full bg-muted rounded-full h-2">
+                <div class="w-full bg-muted/50 rounded-full h-2">
                   <div class="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500" 
                        :style="{ width: `${(currentRound / settings.numberOfRounds) * 100}%` }"></div>
                 </div>
               </div>
               
-              <div class="grid grid-cols-2 gap-4 pt-2">
-                <div class="text-center p-3 bg-muted/30 rounded-lg">
-                  <div class="text-lg font-bold text-primary">{{ categories.length }}</div>
+              <div class="grid grid-cols-2 gap-3 md:gap-4 pt-2">
+                <div class="text-center p-2 md:p-3 bg-muted/30 rounded-lg border border-border/30">
+                  <div class="text-base md:text-lg font-bold text-primary">{{ categories.length }}</div>
                   <div class="text-xs text-muted-foreground font-medium">Categorías</div>
                 </div>
-                <div class="text-center p-3 bg-muted/30 rounded-lg">
-                  <div class="text-lg font-bold text-primary">{{ players.length }}</div>
+                <div class="text-center p-2 md:p-3 bg-muted/30 rounded-lg border border-border/30">
+                  <div class="text-base md:text-lg font-bold text-primary">{{ players.length }}</div>
                   <div class="text-xs text-muted-foreground font-medium">Jugadores</div>
                 </div>
               </div>
@@ -366,37 +371,37 @@ defineExpose({
         </div>
       </div>
 
-      <!-- Botón para avanzar (con mejor diseño) -->
-      <div v-if="showNextRoundButton && isAdmin" class="text-center mt-8">
+      <!-- Botón para avanzar (con mejor diseño y responsivo) -->
+      <div v-if="showNextRoundButton && isAdmin" class="text-center mt-6 md:mt-8">
         <button @click="advanceToNextRound" 
-                class="inline-flex items-center space-x-2 bg-gradient-to-r from-accent to-accent/90 hover:from-accent/90 hover:to-accent text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent/30">
+                class="inline-flex items-center space-x-2 bg-gradient-to-r from-accent via-accent/95 to-accent/90 hover:from-accent/95 hover:via-accent hover:to-accent text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-accent/30 transform hover:scale-[1.02]">
           <span>🚀</span>
-          <span>Avanzar a la siguiente ronda</span>
+          <span class="text-sm md:text-base">Avanzar a la siguiente ronda</span>
         </button>
       </div>
     </div>
 
-    <!-- Estados de espera (mejorados) -->
+    <!-- Estados de espera (mejorados y responsivos) -->
     <div v-else-if="isWaiting" class="flex justify-center items-center h-full pt-20">
-      <div class="max-w-md text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50">
+      <div class="max-w-md w-full mx-auto text-center p-6 md:p-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50">
         <div class="animate-pulse mb-4">
-          <div class="w-16 h-16 bg-primary/20 rounded-full mx-auto flex items-center justify-center">
-            <div class="text-2xl">⏳</div>
+          <div class="w-12 h-12 md:w-16 md:h-16 bg-primary/20 rounded-full mx-auto flex items-center justify-center">
+            <div class="text-xl md:text-2xl">⏳</div>
           </div>
         </div>
-        <h3 class="text-lg font-bold text-foreground mb-2">Preparando la ronda</h3>
-        <div class="text-muted-foreground font-medium">
+        <h3 class="text-lg md:text-xl font-bold text-foreground mb-2">Preparando la ronda</h3>
+        <div class="text-muted-foreground font-medium text-sm md:text-base">
           Esperando que inicie la ronda...
         </div>
       </div>
     </div>
 
-    <!-- Estado desconocido -->
+    <!-- Estado desconocido (mejorado y responsivo) -->
     <div v-else class="flex justify-center items-center h-full pt-20">
-      <div class="max-w-md text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50">
-        <div class="text-4xl mb-4">❓</div>
-        <h3 class="text-lg font-bold text-foreground mb-2">Estado desconocido</h3>
-        <div class="text-muted-foreground font-medium">
+      <div class="max-w-md w-full mx-auto text-center p-6 md:p-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50">
+        <div class="text-3xl md:text-4xl mb-4">❓</div>
+        <h3 class="text-lg md:text-xl font-bold text-foreground mb-2">Estado desconocido</h3>
+        <div class="text-muted-foreground font-medium text-sm md:text-base">
           No se pudo determinar el estado del juego.
         </div>
       </div>
