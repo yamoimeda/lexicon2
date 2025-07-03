@@ -35,7 +35,8 @@
           </button>
         </div>
         <div v-else>
-          <router-link to="/login" class="text-primary-foreground hover:bg-primary/70 px-2 sm:px-3">
+          <router-link to="/login" class="flex flex-row text-primary-foreground 
+          hover:bg-primary/70 px-2 sm:px-3 items-center gap-2 sm:gap-2">
             <LogIn  class="w-4 h-4 shrink-0"  />
             <span class="hidden sm:inline">{{ currentTranslations.login }}</span>
           </router-link>
@@ -50,9 +51,8 @@ import { ref, watch, onMounted,computed } from 'vue';
 import { Globe, UserCircle, LogOut, LogIn } from 'lucide-vue-next'; // Assuming you'll use lucide-vue-next for icons
 import { lenguage } from '../../composables/GlobalVariables'
 import { useTranslations } from '../../Translations/HeaderTraducction';
-// Dummy data for now
-const isAuthenticated = ref(true);
-const username = ref('DummyUser');
+
+
 
 
 const currentTranslations = useTranslations;
