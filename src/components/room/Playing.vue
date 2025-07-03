@@ -149,6 +149,13 @@ const handleSubmit = async () => {
   }
 };
 
+// Validar palabra
+const validateWord = (word) => {
+  if (!word || word.trim() === '') return false;
+  const currentLetterLower = currentLetter.value?.toLowerCase() || '';
+  return word.toLowerCase().startsWith(currentLetterLower);
+};
+
 const advanceToNextRound = async () => {
   if (!isAdmin.value) return;
 
@@ -186,102 +193,211 @@ defineExpose({
 </script>
 
 <template>
-  <div class="min-h-screen p-6">
+  <div class="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-6">
     <!-- Loader -->
     <div v-if="isLoading" class="flex justify-center items-center h-full pt-10">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      <span class="ml-2">Cargando configuración de la sala...</span>
+      <div class="flex flex-col items-center space-y-4">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+        <span class="text-muted-foreground font-medium">Cargando configuración de la sala...</span>
+      </div>
     </div>
 
     <!-- Estado: jugando -->
-    <div v-else-if="isPlaying" class="grid lg:grid-cols-3 gap-8">
-      <div class="lg:col-span-2 space-y-6">
-        <div class="shadow-lg bg-white rounded p-6">
-          <!-- Cabecera con ronda y tiempo -->
-          <div class="flex justify-between items-center mb-4">
-            <div class="text-3xl font-headline text-primary">
-              Ronda {{ currentRound }}/{{ settings.numberOfRounds }}
+    <div v-else-if="isPlaying" class="max-w-7xl mx-auto">
+      <div class="grid lg:grid-cols-3 gap-6 lg:gap-8">
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Card principal del juego -->
+          <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
+            <!-- Cabecera elegante con gradiente -->
+            <div class="bg-gradient-to-r from-primary to-primary/80 text-white p-6">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h1 class="text-2xl md:text-3xl font-bold tracking-tight">
+                    Ronda {{ currentRound }}
+                  </h1>
+                  <p class="text-primary-foreground/80 text-sm font-medium">
+                    de {{ settings.numberOfRounds }} rondas
+                  </p>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <div class="text-right">
+                    <div class="text-xs font-medium text-primary-foreground/70 uppercase tracking-wider">
+                      Tiempo restante
+                    </div>
+                    <div class="text-3xl font-bold tabular-nums" 
+                         :class="timeLeft <= 10 ? 'text-red-100 animate-pulse' : 'text-white'">
+                      {{ Math.floor(timeLeft / 60) }}:{{ String(timeLeft % 60).padStart(2, '0') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <div class="text-xl font-semibold" :class="timeLeft <= 10 ? 'text-red-500' : 'text-accent'">
-                {{ timeLeft }}s
+
+            <!-- Sección de la letra actual -->
+            <div class="px-6 pt-6">
+              <div class="text-center mb-8 p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border border-primary/20">
+                <p class="text-sm font-semibold text-primary/80 mb-2 uppercase tracking-widest">
+                  Letra actual
+                </p>
+                <div class="text-8xl md:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
+                  {{ currentLetter }}
+                </div>
+                <p class="text-xs text-muted-foreground mt-2 font-medium">
+                  Todas las palabras deben empezar con esta letra
+                </p>
+              </div>
+
+              <!-- Formulario mejorado -->
+              <div class="pb-6">
+                <form @submit.prevent="handleSubmit" class="space-y-6">
+                  <div class="grid gap-4">
+                    <div v-for="submission in wordSubmissions" :key="submission.category" 
+                         class="group">
+                      <label :for="submission.category" 
+                             class="block text-sm font-semibold text-foreground mb-2 group-focus-within:text-primary transition-colors">
+                        {{ submission.category }}
+                      </label>
+                      <input
+                        :id="submission.category"
+                        v-model="submission.word"
+                        @input="handleWordChange(submission.category, $event.target.value)"
+                        type="text"
+                        :placeholder="'Palabra con ' + currentLetter + '...'"
+                        class="flex h-12 w-full rounded-xl border-2 border-border bg-white px-4 py-3 text-base font-medium text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-all duration-200"
+                        :disabled="isSubmitting || hasSubmitted || timeLeft === 0"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    :disabled="isSubmitting || hasSubmitted || timeLeft === 0"
+                    class="w-full h-12 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-primary/30"
+                  >
+                    <span v-if="hasSubmitted" class="flex items-center justify-center space-x-2">
+                      <span>✅</span>
+                      <span>¡Palabras enviadas!</span>
+                    </span>
+                    <span v-else-if="isSubmitting" class="flex items-center justify-center space-x-2">
+                      <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                      <span>Enviando...</span>
+                    </span>
+                    <span v-else-if="timeLeft === 0" class="flex items-center justify-center space-x-2">
+                      <span>⏰</span>
+                      <span>Tiempo agotado</span>
+                    </span>
+                    <span v-else class="flex items-center justify-center space-x-2">
+                      <span>📝</span>
+                      <span>Enviar palabras</span>
+                    </span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel lateral mejorado -->
+        <div class="lg:col-span-1 space-y-6">
+          <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-6">
+            <div class="flex items-center space-x-2 mb-6">
+              <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <h2 class="text-xl font-bold text-foreground">Jugadores en vivo</h2>
+            </div>
+            
+            <div class="space-y-3">
+              <div v-for="player in players" :key="player.id" 
+                   class="flex justify-between items-center p-4 rounded-xl transition-all duration-200"
+                   :class="currentRoomData.submissions?.[player.id] 
+                     ? 'bg-green-50 border-2 border-green-200 shadow-sm' 
+                     : 'bg-muted/30 border-2 border-transparent hover:bg-muted/50'">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                       :class="currentRoomData.submissions?.[player.id] ? 'bg-green-500' : 'bg-muted-foreground'">
+                    {{ player.name.charAt(0).toUpperCase() }}
+                  </div>
+                  <div>
+                    <span class="font-semibold text-foreground block">{{ player.name }}</span>
+                    <span v-if="currentRoomData.submissions?.[player.id]" 
+                          class="text-xs text-green-600 font-medium flex items-center space-x-1">
+                      <span>✓</span>
+                      <span>Completado</span>
+                    </span>
+                    <span v-else class="text-xs text-muted-foreground">
+                      Escribiendo...
+                    </span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-lg font-bold text-primary">{{ player.score || 0 }}</div>
+                  <div class="text-xs text-muted-foreground font-medium">puntos</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Letra actual -->
-          <div class="text-center mb-6 p-4 bg-primary/10 rounded-lg">
-            <p class="text-sm text-primary font-medium mb-1">Letra actual</p>
-            <p class="text-6xl font-headline font-bold tracking-widest text-primary">
-              {{ currentLetter }}
-            </p>
-          </div>
-
-          <!-- Formulario de palabras -->
-          <form @submit.prevent="handleSubmit" class="space-y-4">
-            <div v-for="submission in wordSubmissions" :key="submission.category" 
-                 class="bg-white p-4 rounded-lg border border-gray-200">
-              <label :for="submission.category" class="block text-sm font-medium text-gray-700 mb-1">
-                {{ submission.category }}
-              </label>
-              <input
-                :id="submission.category"
-                v-model="submission.word"
-                @input="handleWordChange(submission.category, $event.target.value)"
-                type="text"
-                :placeholder="'Ingresa una palabra que empiece con ' + currentLetter"
-                class="w-full px-4 py-2 border rounded bg-white focus:ring focus:ring-primary"
-                :disabled="isSubmitting || hasSubmitted"
-              />
-            </div>
-
-            <button
-              type="submit"
-              :disabled="isSubmitting || hasSubmitted"
-              class="w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary/90 disabled:opacity-50"
-            >
-              <span v-if="hasSubmitted">¡Palabras enviadas!</span>
-              <span v-else-if="isSubmitting">Enviando...</span>
-              <span v-else>Enviar palabras</span>
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Panel lateral con información -->
-      <div class="lg:col-span-1 space-y-6">
-        <div class="shadow-lg bg-white rounded p-6">
-          <div class="text-2xl font-headline text-primary mb-4">Jugadores</div>
-          <ul class="space-y-2">
-            <li v-for="player in players" :key="player.id" 
-                class="flex justify-between items-center p-3 rounded-md"
-                :class="currentRoomData.submissions?.[player.id] ? 'bg-green-50' : 'bg-muted/50'">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold">{{ player.name }}</span>
-                <span v-if="currentRoomData.submissions?.[player.id]" 
-                      class="text-xs text-green-600 font-medium">
-                  ¡Listo!
-                </span>
+          <!-- Progreso de la partida -->
+          <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-6">
+            <h3 class="text-lg font-bold text-foreground mb-4">Progreso del juego</h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-sm font-medium text-muted-foreground mb-2">
+                  <span>Ronda actual</span>
+                  <span>{{ currentRound }}/{{ settings.numberOfRounds }}</span>
+                </div>
+                <div class="w-full bg-muted rounded-full h-2">
+                  <div class="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500" 
+                       :style="{ width: `${(currentRound / settings.numberOfRounds) * 100}%` }"></div>
+                </div>
               </div>
-              <span class="text-lg font-bold text-primary">{{ player.score || 0 }} pts</span>
-            </li>
-          </ul>
+              
+              <div class="grid grid-cols-2 gap-4 pt-2">
+                <div class="text-center p-3 bg-muted/30 rounded-lg">
+                  <div class="text-lg font-bold text-primary">{{ categories.length }}</div>
+                  <div class="text-xs text-muted-foreground font-medium">Categorías</div>
+                </div>
+                <div class="text-center p-3 bg-muted/30 rounded-lg">
+                  <div class="text-lg font-bold text-primary">{{ players.length }}</div>
+                  <div class="text-xs text-muted-foreground font-medium">Jugadores</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón para avanzar (con mejor diseño) -->
+      <div v-if="showNextRoundButton && isAdmin" class="text-center mt-8">
+        <button @click="advanceToNextRound" 
+                class="inline-flex items-center space-x-2 bg-gradient-to-r from-accent to-accent/90 hover:from-accent/90 hover:to-accent text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent/30">
+          <span>🚀</span>
+          <span>Avanzar a la siguiente ronda</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Estados de espera (mejorados) -->
+    <div v-else-if="isWaiting" class="flex justify-center items-center h-full pt-20">
+      <div class="max-w-md text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50">
+        <div class="animate-pulse mb-4">
+          <div class="w-16 h-16 bg-primary/20 rounded-full mx-auto flex items-center justify-center">
+            <div class="text-2xl">⏳</div>
+          </div>
+        </div>
+        <h3 class="text-lg font-bold text-foreground mb-2">Preparando la ronda</h3>
+        <div class="text-muted-foreground font-medium">
+          Esperando que inicie la ronda...
         </div>
       </div>
     </div>
 
-    <!-- Botón para avanzar a la siguiente ronda -->
-    <div v-if="showNextRoundButton && isAdmin" class="text-center mt-6">
-      <button @click="advanceToNextRound" class="bg-primary text-white py-2 px-4 rounded hover:bg-primary/90">
-        Avanzar a la siguiente ronda
-      </button>
-    </div>
-
-    <!-- Estado: esperando o error -->
-    <div v-else class="flex justify-center items-center h-full pt-10">
-      <div class="max-w-md text-center p-8 bg-white rounded shadow">
-        <div class="text-muted-foreground">
-          {{ isWaiting ? 'Esperando que inicie la ronda...' : 'Estado de juego desconocido.' }}
+    <!-- Estado desconocido -->
+    <div v-else class="flex justify-center items-center h-full pt-20">
+      <div class="max-w-md text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50">
+        <div class="text-4xl mb-4">❓</div>
+        <h3 class="text-lg font-bold text-foreground mb-2">Estado desconocido</h3>
+        <div class="text-muted-foreground font-medium">
+          No se pudo determinar el estado del juego.
         </div>
       </div>
     </div>

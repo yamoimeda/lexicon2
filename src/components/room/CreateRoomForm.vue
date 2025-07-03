@@ -198,12 +198,12 @@ const handleSubmit = async () => {
   const roomId = await generateUniqueRoomId(db);
 
   const roomSettings = {
-    roomName: `${username}'s Game`,
-    numberOfRounds: 3,
-    timePerRound: 30,
-    categories: ['Nombre', 'Apellido', 'Fruta', 'Color', 'Cosa'],
-    language: 'Spanish',
-    endRoundOnFirstSubmit: false,
+    roomName: settings.roomName,
+    numberOfRounds: settings.numberOfRounds,
+    timePerRound: settings.timePerRound,
+    categories: settings.categories.split(',').map(cat => cat.trim()),
+    language: settings.language,
+    endRoundOnFirstSubmit: settings.endRoundOnFirstSubmit,
     admin: userId,
     currentRound: 0,
     gameStatus: 'waiting',

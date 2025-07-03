@@ -162,25 +162,40 @@ const validateWord = (word) => {
 </script>
 
 <template>
-  <div class="min-h-screen p-6">
-    <div class="max-w-6xl mx-auto space-y-6">
-      <div class="text-center bg-white rounded-lg shadow-lg p-6">
-        <h1 class="text-3xl font-headline text-primary mb-2">
-          Resultados - Ronda {{ currentRound }}/{{ numberOfRounds }}
-        </h1>
-        <p class="text-gray-600">
-          {{ isAdmin ? 'Revisa y valida las respuestas de todos los jugadores' : 'Tus respuestas de esta ronda' }}
-        </p>
+  <div class="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-6">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <!-- Cabecera moderna -->
+      <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
+        <div class="bg-gradient-to-r from-accent to-accent/80 text-white p-6">
+          <div class="text-center">
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+              📊 Revisión de Respuestas
+            </h1>
+            <p class="text-accent-foreground/80 text-lg font-medium">
+              Ronda {{ currentRound }} de {{ numberOfRounds }}
+            </p>
+            <p class="text-accent-foreground/70 text-sm mt-2">
+              {{ isAdmin ? 'Revisa y valida las respuestas de todos los jugadores' : 'Tus respuestas de esta ronda' }}
+            </p>
+          </div>
+        </div>
       </div>
 
       <!-- Vista para jugadores no-admin: solo sus respuestas -->
-      <div v-if="!isAdmin" class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-2xl font-semibold text-primary mb-4">Tus Respuestas</h2>
-        <div class="grid gap-4">
+      <div v-if="!isAdmin" class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-6">
+        <div class="flex items-center space-x-3 mb-6">
+          <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+          <h2 class="text-2xl font-bold text-foreground">Tus Respuestas</h2>
+        </div>
+        
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <div v-for="category in categories" :key="category" 
-               class="border rounded-lg p-4 bg-gray-50">
-            <h3 class="font-semibold text-gray-700 mb-2">{{ category }}</h3>
-            <p class="text-lg text-gray-900">
+               class="bg-gradient-to-br from-muted/30 to-muted/10 border-2 border-border rounded-xl p-4 hover:shadow-md transition-all duration-200">
+            <div class="flex items-center space-x-2 mb-3">
+              <div class="w-2 h-2 bg-primary rounded-full"></div>
+              <h3 class="font-bold text-foreground text-sm uppercase tracking-wide">{{ category }}</h3>
+            </div>
+            <p class="text-lg font-semibold text-foreground bg-white rounded-lg p-3 border border-border/50">
               {{ currentUserSubmissions[category] || 'Sin respuesta' }}
             </p>
           </div>
@@ -190,97 +205,161 @@ const validateWord = (word) => {
       <!-- Vista para admin: todas las respuestas agrupadas por categoría -->
       <div v-else class="space-y-6">
         <div v-for="category in categories" :key="category" 
-             class="bg-white rounded-lg shadow-lg p-6">
-          <h2 class="text-2xl font-semibold text-primary mb-4">{{ category }}</h2>
+             class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
           
-          <div class="space-y-4">
-            <div v-for="(playersWithAnswer, answer) in groupedAnswers[category]" 
-                 :key="answer || 'empty'" 
-                 class="border rounded-lg p-4"
-                 :class="isAnswerValid(category, answer) ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'">
-              
-              <div class="flex justify-between items-start mb-2">
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 mb-1">
-                    <h3 class="font-semibold text-lg">
-                      {{ answer || 'Sin respuesta' }}
-                    </h3>
-                    <span v-if="answer && !validateWord(answer)" 
-                          class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">
-                      ⚠️ No empieza con {{ settings.currentLetter }}
-                    </span>
-                  </div>
-                  <p class="text-sm text-gray-600 mb-2">
-                    {{ playersWithAnswer.length }} jugador(es): 
-                    {{ playersWithAnswer.map(p => p.name).join(', ') }}
-                  </p>
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium">
-                      Puntos: {{ getFinalPoints(category, answer) }}
-                    </span>
-                    <span v-if="answer" class="text-xs text-gray-500">
-                      (Base: {{ getPointsForAnswer(category, answer) }} pts)
-                    </span>
-                  </div>
-                </div>
-                
-                <button v-if="answer" 
-                        @click="toggleAnswerValidation(category, answer)"
-                        class="px-3 py-1 rounded text-sm font-medium transition-colors"
-                        :class="isAnswerValid(category, answer) 
-                          ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-                          : 'bg-red-100 text-red-800 hover:bg-red-200'">
-                  {{ isAnswerValid(category, answer) ? 'Válida' : 'Inválida' }}
-                </button>
+          <!-- Cabecera de la categoría -->
+          <div class="bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border/50 p-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-3 h-3 bg-primary rounded-full"></div>
+              <h2 class="text-2xl font-bold text-primary">{{ category }}</h2>
+              <div class="text-sm text-muted-foreground font-medium">
+                {{ Object.keys(groupedAnswers[category] || {}).length }} respuesta(s) única(s)
               </div>
             </div>
-            
-            <div v-if="Object.keys(groupedAnswers[category] || {}).length === 0" 
-                 class="text-center text-gray-500 py-4">
-              No hay respuestas para esta categoría
+          </div>
+          
+          <!-- Respuestas agrupadas -->
+          <div class="p-6">
+            <div class="space-y-4">
+              <div v-for="(playersWithAnswer, answer) in groupedAnswers[category]" 
+                   :key="answer || 'empty'" 
+                   class="border-2 rounded-xl p-4 transition-all duration-200 hover:shadow-md"
+                   :class="isAnswerValid(category, answer) 
+                     ? 'bg-green-50 border-green-200 hover:bg-green-100' 
+                     : 'bg-red-50 border-red-200 hover:bg-red-100'">
+                
+                <div class="flex justify-between items-start">
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-3 mb-3">
+                      <div class="text-2xl font-bold text-foreground bg-white rounded-lg px-3 py-1 border border-border/50">
+                        {{ answer || 'Sin respuesta' }}
+                      </div>
+                      <span v-if="answer && !validateWord(answer)" 
+                            class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium border border-yellow-200">
+                        ⚠️ No empieza con {{ settings.currentLetter }}
+                      </span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4 mb-3">
+                      <div class="flex -space-x-2">
+                        <div v-for="player in playersWithAnswer.slice(0, 3)" 
+                             :key="player.id"
+                             class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-sm">
+                          {{ player.name.charAt(0).toUpperCase() }}
+                        </div>
+                        <div v-if="playersWithAnswer.length > 3"
+                             class="w-8 h-8 rounded-full bg-muted-foreground text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-sm">
+                          +{{ playersWithAnswer.length - 3 }}
+                        </div>
+                      </div>
+                      <div class="text-sm text-muted-foreground">
+                        <span class="font-medium">{{ playersWithAnswer.length }} jugador(es):</span>
+                        {{ playersWithAnswer.map(p => p.name).join(', ') }}
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                      <div class="bg-white rounded-lg px-3 py-1 border border-border/50">
+                        <span class="text-lg font-bold text-primary">{{ getFinalPoints(category, answer) }}</span>
+                        <span class="text-xs text-muted-foreground ml-1">puntos</span>
+                      </div>
+                      <span v-if="answer" class="text-xs text-muted-foreground">
+                        Base: {{ getPointsForAnswer(category, answer) }} pts
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <button v-if="answer" 
+                          @click="toggleAnswerValidation(category, answer)"
+                          class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-4"
+                          :class="isAnswerValid(category, answer) 
+                            ? 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-300' 
+                            : 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-300'">
+                    {{ isAnswerValid(category, answer) ? '✓ Válida' : '✗ Inválida' }}
+                  </button>
+                </div>
+              </div>
+              
+              <div v-if="Object.keys(groupedAnswers[category] || {}).length === 0" 
+                   class="text-center py-8 text-muted-foreground">
+                <div class="text-4xl mb-2">📝</div>
+                <p class="font-medium">No hay respuestas para esta categoría</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Resumen de puntos -->
-        <div class="bg-blue-50 rounded-lg p-6">
-          <h3 class="text-xl font-semibold text-blue-800 mb-4">Resumen de Puntos</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div v-for="player in players" :key="player.id" 
-                 class="bg-white rounded-lg p-4 border">
-              <h4 class="font-semibold text-gray-800">{{ player.name }}</h4>
-              <p class="text-sm text-gray-600">Puntos actuales: {{ player.score || 0 }}</p>
-              <div class="mt-2">
-                <p class="text-lg font-bold text-blue-600">
-                  +{{ categories.reduce((total, category) => {
-                    const answer = submissions[player.id]?.[category]?.toLowerCase().trim() || '';
-                    return total + getFinalPoints(category, answer);
-                  }, 0) }} pts esta ronda
-                </p>
+        <!-- Resumen de puntos mejorado -->
+        <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-500/10 to-blue-400/5 border-b border-border/50 p-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <h3 class="text-2xl font-bold text-foreground">Resumen de Puntos</h3>
+            </div>
+          </div>
+          
+          <div class="p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div v-for="player in players" :key="player.id" 
+                   class="bg-gradient-to-br from-muted/20 to-muted/10 rounded-xl p-4 border-2 border-border hover:shadow-md transition-all duration-200">
+                <div class="flex items-center space-x-3 mb-3">
+                  <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm">
+                    {{ player.name.charAt(0).toUpperCase() }}
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-foreground">{{ player.name }}</h4>
+                    <p class="text-xs text-muted-foreground">Puntos actuales: {{ player.score || 0 }}</p>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg p-3 border border-border/50">
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-green-600">
+                      +{{ categories.reduce((total, category) => {
+                        const answer = submissions[player.id]?.[category]?.toLowerCase().trim() || '';
+                        return total + getFinalPoints(category, answer);
+                      }, 0) }}
+                    </div>
+                    <div class="text-xs text-muted-foreground font-medium">puntos esta ronda</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Botones de acción -->
-      <div class="text-center space-y-4">
-        <div v-if="isAdmin">
-          <p class="text-sm text-gray-600 mb-4">
-            Revisa todas las respuestas y marca como válidas/inválidas antes de continuar
-          </p>
+      <!-- Botones de acción mejorados -->
+      <div class="text-center">
+        <div v-if="isAdmin" class="space-y-4">
+          <div class="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-border/50">
+            <p class="text-sm text-muted-foreground font-medium mb-4">
+              💡 Revisa todas las respuestas y marca como válidas/inválidas antes de continuar
+            </p>
+          </div>
           
           <button @click="continueGame" 
                   :disabled="isStartingNextRound"
-                  class="bg-primary text-white py-3 px-6 rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                  class="inline-flex items-center space-x-3 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-primary/30">
+            <span v-if="isStartingNextRound">
+              <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+            </span>
+            <span v-else-if="isLastRound">🏁</span>
+            <span v-else>🚀</span>
+            
             <span v-if="isStartingNextRound">Procesando...</span>
             <span v-else-if="isLastRound">Finalizar Juego</span>
             <span v-else>Iniciar Siguiente Ronda</span>
           </button>
         </div>
         
-        <div v-else class="text-center text-gray-600">
-          <p>Esperando a que el administrador continue...</p>
+        <div v-else class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 border border-border/50">
+          <div class="animate-pulse mb-4">
+            <div class="w-16 h-16 bg-primary/20 rounded-full mx-auto flex items-center justify-center">
+              <div class="text-2xl">⏳</div>
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-foreground mb-2">Esperando al administrador</h3>
+          <p class="text-muted-foreground font-medium">El administrador está revisando las respuestas...</p>
         </div>
       </div>
     </div>

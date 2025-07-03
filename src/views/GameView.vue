@@ -164,7 +164,7 @@ defineExpose({
     </template>
 
     <!-- Botón para Salir de la Sala -->
-    <div class="text-center">
+    <!-- <div class="text-center">
       <button @click="leaveRoom" class="inline-flex items-center justify-center gap-2 
               whitespace-nowrap rounded-xl text-sm font-medium 
               ring-offset-background transition-colors 
@@ -176,7 +176,7 @@ defineExpose({
               bg-secondary hover:bg-secondary/90 text-secondary-foreground">
         Salir de la Sala
       </button>
-    </div>
+    </div> -->
   </div>
 </template>
 

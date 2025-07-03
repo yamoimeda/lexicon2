@@ -50,16 +50,25 @@ const startGame = async () => {
   try {
     const roomRef = doc(db, 'rooms', props.roomId);
     const startTime = new Date().toISOString();
+    const randomLetter = generateRandomLetter();
 
     await updateDoc(roomRef, {
       'settings.gameStatus': 'playing',
+      'settings.currentRound': 1,
+      'settings.currentLetter': randomLetter,
       'settings.roundStartTime': startTime
     });
 
-    console.log('Juego iniciado con tiempo de inicio:', startTime);
+    console.log('Juego iniciado con tiempo de inicio:', startTime, 'y letra:', randomLetter);
   } catch (error) {
     console.error('Error al iniciar el juego:', error);
   }
+};
+
+// Función para generar letra aleatoria
+const generateRandomLetter = () => {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  return letters[Math.floor(Math.random() * letters.length)];
 };
 
 const leaveRoom = () => {
