@@ -99,21 +99,21 @@ defineExpose({
 <template>
   <div class="flex flex-col gap-6 min-h-screen">
    
-  <div class="flex flex-col gap-6 lg:flex-row">
+  <div class="flex flex-col gap-6">
     <!-- Configuración del Juego -->
-    <div class="bg-white rounded-lg border border-gray-300 shadow-lg p-6 w-full lg:w-1/3">
+    <div class="bg-white rounded-lg border border-gray-300 shadow-lg p-6 w-full ">
       <h2 class="text-2xl font-semibold text-primary mb-4">Ajustes del Juego</h2>
       <ul class="space-y-2">
         <li><strong>Rondas:</strong> {{ gameSettings.numberOfRounds }}</li>
         <li><strong>Tiempo por Ronda:</strong> {{ gameSettings.timePerRound }} segundos</li>
         <li><strong>Idioma:</strong> {{ gameSettings.language }}</li>
-        <li><strong>Categorías:</strong> {{ gameSettings.categories.join(', ') }}</li>
+        <li><strong>Categorías:</strong> {{ (gameSettings.categories || []).join(', ') }}</li>
         <li><strong>Final Rápido:</strong> {{ gameSettings.endRoundOnFirstSubmit ? 'Sí' : 'No' }}</li>
       </ul>
     </div>
 
     <!-- Lista de Jugadores -->
-    <div class="bg-white rounded-lg border border-gray-300 shadow-lg p-6 w-full lg:w-2/3">
+    <div class="bg-white rounded-lg border border-gray-300 shadow-lg p-6 w-full ">
       <h2 class="text-2xl font-semibold text-primary mb-4">Jugadores en la Sala</h2>
       <ul class="space-y-2">
 
