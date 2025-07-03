@@ -165,8 +165,11 @@ defineExpose({
           <div>
             <h1 class="text-2xl font-bold text-foreground mb-2">Conectando a la sala</h1>
             <p class="text-muted-foreground font-medium">Cargando datos del juego...</p>
-            <div class="mt-4 bg-muted/30 rounded-full px-4 py-2">
-              <p class="text-sm text-muted-foreground">ID: <span class="font-mono font-semibold">{{ props.roomId }}</span></p>
+            <div class="mt-4 bg-white/80 rounded-lg px-4 py-3 border border-border/50">
+              <div class="flex items-center justify-center space-x-2">
+                <span class="text-sm text-muted-foreground">ID:</span>
+                <span class="font-mono font-bold text-lg text-foreground">{{ props.roomId }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -185,23 +188,23 @@ defineExpose({
                 <span class="text-white font-bold text-xl">🎯</span>
               </div>
               
-              <!-- Información de la sala -->
-              <div>
-                <h1 class="text-xl md:text-2xl font-bold text-foreground tracking-tight">
+              <!-- Información de la sala con bordes redondeados -->
+              <div class="bg-muted/20 rounded-xl px-4 py-3 border border-border/30">
+                <h1 class="text-xl md:text-2xl font-bold text-foreground tracking-tight mb-1">
                   {{ roomData.settings.roomName }}
                 </h1>
-                <div class="flex items-center space-x-3 text-sm text-muted-foreground">
-                  <span class="flex items-center space-x-1">
+                <div class="flex items-center space-x-3 text-sm">
+                  <div class="flex items-center space-x-2 bg-white/80 rounded-lg px-3 py-1 border border-border/50">
                     <span>🆔</span>
-                    <span class="font-mono font-semibold">{{ props.roomId }}</span>
-                  </span>
+                    <span class="font-mono font-bold text-base text-foreground">{{ props.roomId }}</span>
+                  </div>
                   <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
-                  <span class="flex items-center space-x-1">
+                  <span class="flex items-center space-x-1 text-muted-foreground">
                     <span>👥</span>
-                    <span>{{ roomData.players?.length || 0 }} jugadores</span>
+                    <span class="font-medium">{{ roomData.players?.length || 0 }} jugadores</span>
                   </span>
                   <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
-                  <span class="flex items-center space-x-1">
+                  <span class="flex items-center space-x-1 text-muted-foreground">
                     <span class="w-2 h-2 rounded-full animate-pulse"
                           :class="getStatusColor(roomData.settings.gameStatus)"></span>
                     <span class="capitalize font-medium">{{ getStatusText(roomData.settings.gameStatus) }}</span>
