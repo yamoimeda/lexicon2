@@ -114,31 +114,28 @@ defineExpose({
     <div class="max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
         
-        <!-- Panel principal con configuración del juego -->
-        <div class="order-2 lg:order-1 lg:col-span-2 space-y-4 md:space-y-6">
-          <!-- Cabecera de bienvenida - mejorada -->
-          <div class="bg-white/95 backdrop-blur-sm shadow-lg md:shadow-xl rounded-xl md:rounded-2xl border border-border/50 overflow-hidden">
-            <div class="bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-white p-4 md:p-6">
-              <div class="text-center">
-                <h1 class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight mb-1 md:mb-2">
-                  🎮 Sala de Espera
-                </h1>
-                <p class="text-primary-foreground/90 text-sm md:text-base lg:text-lg font-medium">
-                  Preparando el juego de palabras
-                </p>
-                <p class="text-primary-foreground/80 text-xs md:text-sm mt-1 md:mt-2">
-                  {{ isAdmin ? 'Revisa la configuración e inicia cuando estés listo' : 'Esperando que el administrador inicie el juego' }}
-                </p>
-              </div>
+        <!-- Cabecera de bienvenida - mejorada -->
+        <div class="bg-white/95 backdrop-blur-sm shadow-lg md:shadow-xl rounded-xl md:rounded-2xl border border-border/50 overflow-hidden">
+          <div class="bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-white p-4 md:p-6">
+            <div class="text-center">
+              <h1 class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight mb-1 md:mb-2">
+                Sala de Espera
+              </h1>
+              <p class="text-primary-foreground/80 text-xs md:text-sm mt-1 md:mt-2">
+                {{ isAdmin ? 'Revisa la configuración e inicia cuando estés listo' : 'Esperando que el administrador inicie el juego' }}
+              </p>
             </div>
           </div>
+        </div>
+        <!-- Panel principal con configuración del juego -->
+        <div class="order-2 lg:order-1 lg:col-span-2 space-y-4 md:space-y-6">
 
           <!-- Configuración del Juego - mejorada -->
           <div class="bg-white/95 backdrop-blur-sm shadow-lg md:shadow-xl rounded-xl md:rounded-2xl border border-border/50 overflow-hidden">
             <div class="bg-gradient-to-r from-blue-500/15 via-blue-400/10 to-blue-500/5 border-b border-border/50 p-4 md:p-6">
               <div class="flex items-center space-x-2 md:space-x-3">
                 <div class="w-2 h-2 md:w-3 md:h-3 bg-blue-500 rounded-full animate-pulse"></div>
-                <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground">⚙️ Configuración</h2>
+                <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground">Configuración</h2>
               </div>
             </div>
             
@@ -146,50 +143,49 @@ defineExpose({
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 lg:gap-6">
                 <!-- Rondas -->
                 <div class="bg-gradient-to-br from-muted/30 to-muted/15 rounded-lg md:rounded-xl p-3 md:p-4 border border-border/40 hover:border-border/60 transition-colors">
-                  <div class="flex items-center space-x-1 md:space-x-2 mb-1 md:mb-2">
-                    <span class="text-lg md:text-xl lg:text-2xl">🔄</span>
-                    <span class="font-bold text-foreground text-sm md:text-base">Rondas</span>
+                  <div class="flex items-center space-x-1 md:space-x-2">
+                    
+                    <span class="font-bold text-foreground text-sm md:text-base">Rondas:</span>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-primary">{{ gameSettings.numberOfRounds }}</p>
+                  
                   </div>
-                  <p class="text-lg md:text-xl lg:text-2xl font-bold text-primary">{{ gameSettings.numberOfRounds }}</p>
-                  <p class="text-xs text-muted-foreground">rondas totales</p>
                 </div>
                 
                 <!-- Tiempo -->
                 <div class="bg-gradient-to-br from-muted/30 to-muted/15 rounded-lg md:rounded-xl p-3 md:p-4 border border-border/40 hover:border-border/60 transition-colors">
-                  <div class="flex items-center space-x-1 md:space-x-2 mb-1 md:mb-2">
-                    <span class="text-lg md:text-xl lg:text-2xl">⏱️</span>
-                    <span class="font-bold text-foreground text-sm md:text-base">Tiempo</span>
+                  <div class="flex items-center space-x-1 md:space-x-2">
+                    
+                    <span class="font-bold text-foreground text-sm md:text-base">Tiempo:</span>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-primary">{{ gameSettings.timePerRound }}</p>
+                    <p class="text-xs text-muted-foreground"> segundos</p>
                   </div>
-                  <p class="text-lg md:text-xl lg:text-2xl font-bold text-primary">{{ gameSettings.timePerRound }}</p>
-                  <p class="text-xs text-muted-foreground">segundos</p>
                 </div>
 
                 <!-- Idioma -->
                 <div class="bg-gradient-to-br from-muted/30 to-muted/15 rounded-lg md:rounded-xl p-3 md:p-4 border border-border/40 hover:border-border/60 transition-colors">
-                  <div class="flex items-center space-x-1 md:space-x-2 mb-1 md:mb-2">
-                    <span class="text-lg md:text-xl lg:text-2xl">🌍</span>
-                    <span class="font-bold text-foreground text-sm md:text-base">Idioma</span>
+                  <div class="flex items-center space-x-1 md:space-x-2">
+                    
+                    <span class="font-bold text-foreground text-sm md:text-base">Idioma:</span>
+                    <p class="text-sm md:text-base lg:text-lg font-semibold text-primary">{{ gameSettings.language }}</p>
                   </div>
-                  <p class="text-sm md:text-base lg:text-lg font-semibold text-primary">{{ gameSettings.language }}</p>
                 </div>
                 
                 <!-- Final Rápido -->
                 <div class="bg-gradient-to-br from-muted/30 to-muted/15 rounded-lg md:rounded-xl p-3 md:p-4 border border-border/40 hover:border-border/60 transition-colors">
-                  <div class="flex items-center space-x-1 md:space-x-2 mb-1 md:mb-2">
-                    <span class="text-lg md:text-xl lg:text-2xl">⚡</span>
-                    <span class="font-bold text-foreground text-sm md:text-base">Fin Rápido</span>
+                  <div class="flex items-center space-x-1 md:space-x-2">
+                    
+                    <span class="font-bold text-foreground text-sm md:text-base">Fin Rápido:</span>
+                    <p class="text-sm md:text-base lg:text-lg font-semibold"
+                       :class="gameSettings.endRoundOnFirstSubmit ? 'text-green-600' : 'text-gray-500'">
+                      {{ gameSettings.endRoundOnFirstSubmit ? 'Sí' : 'No' }}
+                    </p>
                   </div>
-                  <p class="text-sm md:text-base lg:text-lg font-semibold"
-                     :class="gameSettings.endRoundOnFirstSubmit ? 'text-green-600' : 'text-gray-500'">
-                    {{ gameSettings.endRoundOnFirstSubmit ? 'Sí' : 'No' }}
-                  </p>
                 </div>
               </div>
 
               <!-- Categorías - mejoradas -->
               <div class="mt-4 md:mt-6">
                 <div class="flex items-center space-x-1 md:space-x-2 mb-3 md:mb-4">
-                  <span class="text-lg md:text-xl lg:text-2xl">📝</span>
                   <h3 class="text-base md:text-lg font-bold text-foreground">Categorías</h3>
                   <span class="text-xs md:text-sm text-muted-foreground font-medium ml-2">
                     ({{ gameSettings.categories?.length || 0 }})
@@ -210,7 +206,7 @@ defineExpose({
           <div v-if="isAdmin" class="bg-white/95 backdrop-blur-sm shadow-lg md:shadow-xl rounded-xl md:rounded-2xl border border-border/50 p-4 md:p-6">
             <div class="text-center space-y-3 md:space-y-4">
               <div class="mb-3 md:mb-4">
-                <h3 class="text-lg md:text-xl font-bold text-foreground mb-1 md:mb-2">🚀 Controles Admin</h3>
+                <h3 class="text-lg md:text-xl font-bold text-foreground mb-1 md:mb-2">Controles Admin</h3>
                 <p class="text-muted-foreground text-xs md:text-sm">
                   Inicia cuando todos estén listos
                 </p>
@@ -219,7 +215,7 @@ defineExpose({
               <button @click="startGame" 
                       class="w-full h-12 md:h-14 bg-gradient-to-r from-primary via-primary/95 to-primary/90 hover:from-primary/95 hover:via-primary hover:to-primary text-white font-bold text-base md:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/30 transform hover:scale-[1.02]">
                 <span class="flex items-center justify-center space-x-2 md:space-x-3">
-                  <span class="text-xl md:text-2xl">🎯</span>
+                  <span class="text-xl md:text-2xl"></span>
                   <span>Iniciar Juego</span>
                 </span>
               </button>
@@ -301,6 +297,9 @@ defineExpose({
             </div>
           </div>
 
+        </div>
+
+        <div class="order-3 lg:order-2 lg:col-span-1 space-y-4 md:space-y-6">
           <!-- Información compacta en móvil - mejorada -->
           <div class="bg-white/95 backdrop-blur-sm shadow-lg md:shadow-xl rounded-xl md:rounded-2xl border border-border/50 p-4 md:p-6">
             <h3 class="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4 flex items-center space-x-1 md:space-x-2">
@@ -327,6 +326,7 @@ defineExpose({
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

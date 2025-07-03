@@ -153,7 +153,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+  <div class="min-h-screen bg-background">
     <!-- Estado de carga mejorado -->
     <div v-if="!roomData" class="flex justify-center items-center min-h-screen">
       <div class="text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50 max-w-md mx-4">
@@ -179,17 +179,14 @@ defineExpose({
     <!-- Contenido principal cuando los datos están cargados -->
     <template v-else>
       <!-- Cabecera mejorada con bordes redondeados -->
-      <div class="bg-white/95 backdrop-blur-sm border-b border-border/50 shadow-sm sticky top-0 z-50">
+      <div class="bg-muted/90 rounded-2xl backdrop-blur-sm border border-border/30 shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3 md:space-x-4">
-              <!-- Logo/Icono del juego -->
-              <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg">
-                <span class="text-white font-bold text-lg md:text-xl">🎯</span>
-              </div>
               
+             
               <!-- Información de la sala con bordes muy redondeados -->
-              <div class="bg-muted/20 rounded-2xl px-3 py-2 md:px-4 md:py-3 border border-border/30">
+              <div class="px-3 py-2 md:px-4 md:py-3">
                 <h1 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground tracking-tight mb-1">
                   {{ roomData.settings.roomName }}
                 </h1>
@@ -215,9 +212,9 @@ defineExpose({
 
             <!-- Botón de salir mejorado -->
             <button @click="leaveRoom" 
-                    class="hidden md:inline-flex items-center space-x-2 px-3 py-2 md:px-4 rounded-2xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30">
-              <span>🚪</span>
-              <span class="hidden lg:inline">Salir</span>
+                    class=" md:inline-flex items-center space-x-2 px-3 py-2 md:px-4 rounded-2xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30">
+              
+              <span class=" lg:inline">Salir</span>
             </button>
           </div>
         </div>
@@ -267,14 +264,7 @@ defineExpose({
         </div>
       </div>
 
-      <!-- Botón flotante para salir en móviles -->
-      <div class="md:hidden fixed bottom-4 right-4 z-50">
-        <button @click="leaveRoom" 
-                class="w-12 h-12 bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white border border-border/50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/30">
-          <span class="text-lg">🚪</span>
-        </button>
-      </div>
-
+      
       <!-- Indicador de conexión -->
       <div class="fixed bottom-4 left-4 z-40">
         <div class="bg-white/90 backdrop-blur-sm rounded-2xl px-2 py-1 md:px-3 md:py-2 shadow-lg border border-border/50 flex items-center space-x-1 md:space-x-2">
