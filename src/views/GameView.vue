@@ -121,6 +121,28 @@ onUnmounted(() => {
   }
 });
 
+// Función para obtener el color del estado
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'waiting': return 'bg-yellow-500';
+    case 'playing': return 'bg-green-500';
+    case 'reviewing': return 'bg-blue-500';
+    case 'final': return 'bg-purple-500';
+    default: return 'bg-gray-500';
+  }
+};
+
+// Función para obtener el texto del estado
+const getStatusText = (status) => {
+  switch (status) {
+    case 'waiting': return 'Esperando';
+    case 'playing': return 'Jugando';
+    case 'reviewing': return 'Revisando';
+    case 'final': return 'Finalizado';
+    default: return 'Desconocido';
+  }
+};
+
 // Exponer la API pública del componente
 defineExpose({
   fetchRoomData,
@@ -131,52 +153,133 @@ defineExpose({
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 min-h-screen p-6 max-w-2xl mx-auto">
-    <h1 v-if="!roomData" class="text-4xl font-bold text-primary mb-4 text-center">Cargando...</h1>
+  <div class="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+    <!-- Estado de carga mejorado -->
+    <div v-if="!roomData" class="flex justify-center items-center min-h-screen">
+      <div class="text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50 max-w-md mx-4">
+        <div class="flex flex-col items-center space-y-6">
+          <div class="relative">
+            <div class="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent"></div>
+            <div class="absolute inset-0 rounded-full h-16 w-16 border-4 border-primary/20"></div>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-foreground mb-2">Conectando a la sala</h1>
+            <p class="text-muted-foreground font-medium">Cargando datos del juego...</p>
+            <div class="mt-4 bg-muted/30 rounded-full px-4 py-2">
+              <p class="text-sm text-muted-foreground">ID: <span class="font-mono font-semibold">{{ props.roomId }}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Contenido principal cuando los datos están cargados -->
     <template v-else>
-      <h1 class="text-4xl font-bold text-primary mb-4 text-center">
-        {{roomData.settings.roomName }} ID: {{ props.roomId }}
-      </h1>
+      <!-- Cabecera moderna y elegante -->
+      <div class="bg-white/95 backdrop-blur-sm border-b border-border/50 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <!-- Logo/Icono del juego -->
+              <div class="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
+                <span class="text-white font-bold text-xl">🎯</span>
+              </div>
+              
+              <!-- Información de la sala -->
+              <div>
+                <h1 class="text-xl md:text-2xl font-bold text-foreground tracking-tight">
+                  {{ roomData.settings.roomName }}
+                </h1>
+                <div class="flex items-center space-x-3 text-sm text-muted-foreground">
+                  <span class="flex items-center space-x-1">
+                    <span>🆔</span>
+                    <span class="font-mono font-semibold">{{ props.roomId }}</span>
+                  </span>
+                  <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                  <span class="flex items-center space-x-1">
+                    <span>👥</span>
+                    <span>{{ roomData.players?.length || 0 }} jugadores</span>
+                  </span>
+                  <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                  <span class="flex items-center space-x-1">
+                    <span class="w-2 h-2 rounded-full animate-pulse"
+                          :class="getStatusColor(roomData.settings.gameStatus)"></span>
+                    <span class="capitalize font-medium">{{ getStatusText(roomData.settings.gameStatus) }}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
 
-      <RoomNotFound v-if="!roomData" />
+            <!-- Botón de salir mejorado -->
+            <button @click="leaveRoom" 
+                    class="hidden md:inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30">
+              <span>🚪</span>
+              <span>Salir</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
-      <Waiting
-        v-if="roomData.settings.gameStatus === 'waiting'"
-        :room-data="roomData"
-        :room-id="props.roomId"
-      />
-      <Playing
-        v-else-if="roomData.settings.gameStatus === 'playing'"
-        :room-data="roomData"
-        :room-id="props.roomId"
-      />
-      <Reviewing
-        v-else-if="roomData.settings.gameStatus === 'reviewing'"
-        :room-data="roomData"
-        :room-id="props.roomId"
-      />
-      <Final
-        v-else-if="roomData.settings.gameStatus === 'final'"
-        :room-data="roomData"
-        :room-id="props.roomId"
-      />
+      <!-- Contenido principal -->
+      <div class="max-w-7xl mx-auto">
+        <!-- Error state -->
+        <RoomNotFound v-if="!roomData" />
+
+        <!-- Estados del juego -->
+        <Waiting
+          v-if="roomData.settings.gameStatus === 'waiting'"
+          :room-data="roomData"
+          :room-id="props.roomId"
+        />
+        <Playing
+          v-else-if="roomData.settings.gameStatus === 'playing'"
+          :room-data="roomData"
+          :room-id="props.roomId"
+        />
+        <Reviewing
+          v-else-if="roomData.settings.gameStatus === 'reviewing'"
+          :room-data="roomData"
+          :room-id="props.roomId"
+        />
+        <Final
+          v-else-if="roomData.settings.gameStatus === 'final'"
+          :room-data="roomData"
+          :room-id="props.roomId"
+        />
+
+        <!-- Estado desconocido -->
+        <div v-else class="flex justify-center items-center min-h-[50vh] p-6">
+          <div class="text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50 max-w-md">
+            <div class="text-4xl mb-4">⚠️</div>
+            <h2 class="text-xl font-bold text-foreground mb-2">Estado desconocido</h2>
+            <p class="text-muted-foreground font-medium mb-4">
+              El juego está en un estado no reconocido
+            </p>
+            <button @click="fetchRoomData" 
+                    class="inline-flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors">
+              <span>🔄</span>
+              <span>Reintentar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón flotante para salir en móviles -->
+      <div class="md:hidden fixed bottom-6 right-6 z-50">
+        <button @click="leaveRoom" 
+                class="w-14 h-14 bg-white/90 backdrop-blur-sm shadow-xl rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white border border-border/50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/30">
+          <span class="text-xl">🚪</span>
+        </button>
+      </div>
+
+      <!-- Indicador de conexión -->
+      <div class="fixed bottom-6 left-6 z-40">
+        <div class="bg-white/90 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg border border-border/50 flex items-center space-x-2">
+          <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <span class="text-xs font-medium text-muted-foreground">En vivo</span>
+        </div>
+      </div>
     </template>
-
-    <!-- Botón para Salir de la Sala -->
-    <!-- <div class="text-center">
-      <button @click="leaveRoom" class="inline-flex items-center justify-center gap-2 
-              whitespace-nowrap rounded-xl text-sm font-medium 
-              ring-offset-background transition-colors 
-              focus-visible:outline-none focus-visible:ring-2 
-              focus-visible:ring-ring focus-visible:ring-offset-2 
-              disabled:pointer-events-none disabled:opacity-50 
-              [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 
-              h-10 px-4 py-2 w-full 
-              bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-        Salir de la Sala
-      </button>
-    </div> -->
   </div>
 </template>
 
