@@ -55,19 +55,7 @@ const leaveRoom = () => {
   console.log('Saliendo de la sala...');
   router.push('/');
 };
-Vue warn]: Avoid app logic that relies on enumerating keys on a component instance. The keys will be empty in production mode to avoid performance overhead. 
-  at <Waiting key=1 room-data= 
-{createdAt: _Timestamp, settings: Object, rounds: Array(0), players: Array(1), id: "TCMSSP"…}
-room-id="TCMSSP" > 
-  at <GameView roomId="TCMSSP" onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< 
-{fetchRoomData: ƒ fetchRoomData(), leaveRoom: ƒ leaveRoom(), roomData: Object}
-> > 
-  at <RouterView> 
-  at <AppLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< 
-{}
-> > 
-  at <RouterView> 
-  at <App> 
+
 onMounted(() => {
   const userId = localStorage.getItem('userId');
   const username = localStorage.getItem('username');
