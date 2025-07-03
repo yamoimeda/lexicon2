@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useTranslations } from '../Translations/HomeTranslation';
 import RoomNotFound from '../components/room/RoomNotFound.vue';
 import Waiting from '../components/room/Waiting.vue';
@@ -21,6 +21,7 @@ const isAdmin = ref(true); // Cambiar según el usuario actual
 const router = useRouter();
 const db = getFirestore();
 const roomData = ref(null);
+let unsubscribe = null;
 const T = useTranslations;
 
 const fetchRoomData = async () => {
@@ -56,6 +57,51 @@ const leaveRoom = () => {
   router.push('/');
 };
 
+// Función para verificar si todos los jugadores han enviado sus respuestas
+const checkAllPlayersSubmitted = (roomData) => {
+  const players = roomData.players || [];
+  const submissions = roomData.submissions || {};
+
+  return players.every(player => submissions[player.id]);
+};
+
+// Función para manejar transiciones automáticas
+const handleRoundTransition = async (data) => {
+  const settings = data.settings || {};
+
+  if (settings.gameStatus === 'playing' && checkAllPlayersSubmitted(data)) {
+    try {
+      const roomRef = doc(db, 'rooms', props.roomId);
+      await updateDoc(roomRef, {
+        'settings.gameStatus': 'reviewing'
+      });
+      console.log('Transición automática a reviewing');
+    } catch (error) {
+      console.error('Error en transición a reviewing:', error);
+    }
+  }
+};
+
+// Escuchar cambios en tiempo real
+const listenToRoomChanges = () => {
+  const roomRef = doc(db, 'rooms', props.roomId);
+
+  unsubscribe = onSnapshot(roomRef, (doc) => {
+    if (doc.exists()) {
+      const data = doc.data();
+      roomData.value = data;
+      console.log('Datos de la sala actualizados:', data);
+
+      handleRoundTransition(data);
+    } else {
+      console.log('La sala no existe.');
+      roomData.value = null;
+    }
+  }, (error) => {
+    console.error('Error al escuchar cambios de la sala:', error);
+  });
+};
+
 onMounted(() => {
   const userId = localStorage.getItem('userId');
   const username = localStorage.getItem('username');
@@ -64,7 +110,14 @@ onMounted(() => {
     console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
     router.replace('/login');
   } else {
+    listenToRoomChanges();
     fetchRoomData();
+  }
+});
+
+onUnmounted(() => {
+  if (unsubscribe) {
+    unsubscribe();
   }
 });
 

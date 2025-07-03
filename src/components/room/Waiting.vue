@@ -46,13 +46,17 @@ const listenToRoomChanges = () => {
 
 const startGame = async () => {
   if (!isAdmin.value) return;
-  
+
   try {
     const roomRef = doc(db, 'rooms', props.roomId);
+    const startTime = new Date().toISOString();
+
     await updateDoc(roomRef, {
-      'settings.gameStatus': 'playing'
+      'settings.gameStatus': 'playing',
+      'settings.roundStartTime': startTime
     });
-    console.log('Juego iniciado');
+
+    console.log('Juego iniciado con tiempo de inicio:', startTime);
   } catch (error) {
     console.error('Error al iniciar el juego:', error);
   }
