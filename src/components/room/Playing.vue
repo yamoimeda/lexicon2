@@ -213,7 +213,7 @@ defineExpose({
               <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                 <div>
                   <h1 class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
-                    Ronda {{ currentRound }}
+                    Ronda {{ currentRound }} /
                   </h1>
                   <p class="text-primary-foreground/90 text-sm font-medium">
                     de {{ settings.numberOfRounds }} rondas
