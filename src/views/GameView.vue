@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getFirestore, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { useTranslations } from '../Translations/HomeTranslation';
+import { useGameTranslations } from '../Translations/GameTranslation';
 import { useAuth } from '../composables/useAuth.js';
 import RoomNotFound from '../components/room/RoomNotFound.vue';
 import Waiting from '../components/room/Waiting.vue';
@@ -24,7 +24,7 @@ const router = useRouter();
 const db = getFirestore();
 const roomData = ref(null);
 let unsubscribe = null;
-const T = useTranslations;
+const T = useGameTranslations;
 
 const fetchRoomData = async () => {
   try {
@@ -169,8 +169,8 @@ defineExpose({
             <div class="absolute inset-0 rounded-full h-16 w-16 border-4 border-primary/20"></div>
           </div>
           <div>
-            <h1 class="text-2xl font-bold text-foreground mb-2">Conectando a la sala</h1>
-            <p class="text-muted-foreground font-medium">Cargando datos del juego...</p>
+            <h1 class="text-2xl font-bold text-foreground mb-2">{{ T.connectingToRoom }}</h1>
+            <p class="text-muted-foreground font-medium">{{ T.loadingGameData }}</p>
             <div class="mt-4 bg-white/80 rounded-lg px-4 py-3 border border-border/50">
               <div class="flex items-center justify-center space-x-2">
                 <span class="text-sm text-muted-foreground">ID:</span>
@@ -217,7 +217,7 @@ defineExpose({
             <!-- Botón de salir mejorado -->
             <button @click="leaveRoom" 
                     class=" md:inline-flex items-center space-x-2 px-3 py-2 md:px-4 rounded-2xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30">
-              <span class=" lg:inline">Salir</span>
+              <span class=" lg:inline">{{ T.leave }}</span>
             </button>
           </div>
         </div>
@@ -254,14 +254,14 @@ defineExpose({
         <div v-else class="flex justify-center items-center min-h-[50vh] p-6">
           <div class="text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50 max-w-md">
             <div class="text-4xl mb-4">⚠️</div>
-            <h2 class="text-xl font-bold text-foreground mb-2">Estado desconocido</h2>
+            <h2 class="text-xl font-bold text-foreground mb-2">{{ T.unknownState }}</h2>
             <p class="text-muted-foreground font-medium mb-4">
-              El juego está en un estado no reconocido
+              {{ T.gameInUnknownState }}
             </p>
             <button @click="fetchRoomData" 
                     class="inline-flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors">
               <span>🔄</span>
-              <span>Reintentar</span>
+              <span>{{ T.retry }}</span>
             </button>
           </div>
         </div>
@@ -271,7 +271,7 @@ defineExpose({
       <div class="fixed bottom-4 left-4 z-40">
         <div class="bg-white/90 backdrop-blur-sm rounded-2xl px-2 py-1 md:px-3 md:py-2 shadow-lg border border-border/50 flex items-center space-x-1 md:space-x-2">
           <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span class="text-xs font-medium text-muted-foreground">En vivo</span>
+          <span class="text-xs font-medium text-muted-foreground">{{ T.live }}</span>
         </div>
       </div>
     </template>

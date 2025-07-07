@@ -4,14 +4,16 @@ import { useRouter } from 'vue-router';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 import '../firebase/config.js';
 import { useAuth } from '../composables/useAuth.js';
+import { useLogInTranslations } from '../Translations/LogInTranslation';
 
 const username = ref('');
 const router = useRouter();
 const { initializeAuth } = useAuth();
+const T = useLogInTranslations;
 
 const handleLogin = async () => {
   if (!username.value.trim()) {
-    alert('Por favor, ingresa un nombre de usuario.');
+    alert(T.error);
     return;
   }
 
@@ -31,7 +33,7 @@ const handleLogin = async () => {
     router.replace('/');
   } catch (error) {
     console.error('Error al autenticar:', error);
-    alert('Hubo un error al iniciar sesión. Por favor, intenta de nuevo.');
+    alert(T.error);
   }
 };
 </script>
@@ -39,15 +41,15 @@ const handleLogin = async () => {
 <template>
   <div class="flex items-center justify-center min-h-[60vh] p-6">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-      <h1 class="text-2xl font-bold text-primary mb-4 text-center">Iniciar Sesión</h1>
+      <h1 class="text-2xl font-bold text-primary mb-4 text-center">{{ T.title }}</h1>
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
+          <label for="username" class="block text-sm font-medium text-gray-700">{{ T.username }}</label>
           <input
             id="username"
             v-model="username"
             type="text"
-            placeholder="Ingresa tu nombre"
+            :placeholder="T.placeholder"
             class="w-full px-4 py-2 border rounded bg-input border-border focus:ring focus:ring-primary"
           />
         </div>
@@ -55,7 +57,7 @@ const handleLogin = async () => {
           type="submit"
           class="w-full px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
         >
-          Iniciar Sesión
+          {{ T.button }}
         </button>
       </form>
     </div>

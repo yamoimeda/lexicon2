@@ -1,10 +1,13 @@
 <script setup>
 import { computed } from 'vue';
+import { useFinalTranslations } from '../../Translations/FinalTranslation';
 
 // Props
 const props = defineProps({
   roomData: { type: Object, required: true }
 });
+
+const T = useFinalTranslations;
 
 // Computed properties
 const players = computed(() => props.roomData.players || []);
@@ -48,10 +51,10 @@ const getPositionClasses = (index) => {
       <!-- Cabecera mejorada y responsiva -->
       <div class="text-center bg-white/95 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-xl p-6 md:p-8 border border-border/50">
         <h1 class="text-2xl md:text-3xl lg:text-4xl font-headline text-primary mb-2">
-          🎉 ¡Juego Finalizado! 🎉
+          🎉 {{ T.gameFinished }} 🎉
         </h1>
         <p class="text-sm md:text-base lg:text-lg text-gray-600">
-          Resultados finales después de {{ settings.numberOfRounds }} rondas
+          {{ T.finalResults }} {{ settings.numberOfRounds }} {{ T.rounds }}
         </p>
       </div>
 
@@ -59,16 +62,16 @@ const getPositionClasses = (index) => {
       <div v-if="winner" class="text-center">
         <div class="bg-accent text-accent-foreground rounded-xl md:rounded-2xl shadow-xl p-6 md:p-8 border-4 border-accent transform hover:scale-[1.02] transition-transform duration-300">
           <div class="text-4xl md:text-5xl lg:text-6xl mb-3 md:mb-4">👑</div>
-          <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mb-1 md:mb-2">¡Felicitaciones!</h2>
+          <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mb-1 md:mb-2">{{ T.congratulations }}</h2>
           <h3 class="text-lg md:text-xl lg:text-2xl font-semibold mb-1">{{ winner.name }}</h3>
-          <p class="text-base md:text-lg lg:text-xl opacity-90">{{ winner.score }} puntos</p>
+          <p class="text-base md:text-lg lg:text-xl opacity-90">{{ winner.score }} {{ T.points }}</p>
         </div>
       </div>
 
       <!-- Clasificación completa - mejorada y responsiva -->
       <div class="bg-white/95 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-xl p-4 md:p-6 border border-border/50">
         <h2 class="text-lg md:text-xl lg:text-2xl font-semibold text-primary mb-4 md:mb-6 text-center">
-          📊 Clasificación Final
+          📊 {{ T.finalRanking }}
         </h2>
         
         <div class="space-y-3 md:space-y-4">
@@ -87,7 +90,7 @@ const getPositionClasses = (index) => {
               <div class="flex flex-col">
                 <span class="text-base md:text-lg lg:text-xl font-semibold">{{ player.name }}</span>
                 <span class="text-xs md:text-sm opacity-75">
-                  {{ index === 0 ? '¡Ganador!' : index === 1 ? 'Segundo lugar' : index === 2 ? 'Tercer lugar' : `${index + 1}° lugar` }}
+                  {{ index === 0 ? T.winner : index === 1 ? T.secondPlace : index === 2 ? T.thirdPlace : `${index + 1}° ${T.place}` }}
                 </span>
               </div>
             </div>
@@ -95,7 +98,7 @@ const getPositionClasses = (index) => {
             <!-- Puntaje -->
             <div class="text-right">
               <div class="text-lg md:text-xl lg:text-2xl font-bold">{{ player.score }}</div>
-              <div class="text-xs md:text-sm opacity-75">puntos</div>
+              <div class="text-xs md:text-sm opacity-75">{{ T.points }}</div>
             </div>
           </div>
         </div>
@@ -105,17 +108,17 @@ const getPositionClasses = (index) => {
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
         <div class="bg-white/95 backdrop-blur-sm rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 text-center border border-border/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
           <div class="text-lg md:text-xl lg:text-2xl font-bold text-primary">{{ finalStats.length }}</div>
-          <div class="text-xs md:text-sm text-gray-600">Jugadores</div>
+          <div class="text-xs md:text-sm text-gray-600">{{ T.players }}</div>
         </div>
         
         <div class="bg-white/95 backdrop-blur-sm rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 text-center border border-border/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
           <div class="text-lg md:text-xl lg:text-2xl font-bold text-primary">{{ settings.numberOfRounds || 0 }}</div>
-          <div class="text-xs md:text-sm text-gray-600">Rondas</div>
+          <div class="text-xs md:text-sm text-gray-600">{{ T.rounds }}</div>
         </div>
         
         <div class="bg-white/95 backdrop-blur-sm rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 text-center border border-border/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
           <div class="text-lg md:text-xl lg:text-2xl font-bold text-primary">{{ winner?.score || 0 }}</div>
-          <div class="text-xs md:text-sm text-gray-600">Puntaje máximo</div>
+          <div class="text-xs md:text-sm text-gray-600">{{ T.maxScore }}</div>
         </div>
       </div>
 
@@ -124,7 +127,7 @@ const getPositionClasses = (index) => {
         <button 
           @click="$router.push('/')"
           class="bg-gradient-to-r from-primary via-primary/95 to-primary/90 hover:from-primary/95 hover:via-primary hover:to-primary text-primary-foreground py-3 md:py-4 px-6 md:px-8 rounded-xl text-sm md:text-base lg:text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary/30">
-          🏠 Volver al inicio
+          🏠 {{ T.goHomeButton }}
         </button>
       </div>
     </div>

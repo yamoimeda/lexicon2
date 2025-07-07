@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getFirestore, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useAuth } from '../../composables/useAuth.js';
+import { useWaitingTranslations } from '../../Translations/WaitingTranslation';
 
 // Definir props
 const props = defineProps({
@@ -106,6 +107,8 @@ defineExpose({
   gameSettings,
   isAdmin
 });
+
+const T = useWaitingTranslations;
 </script>
 
 <template>

@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { getFirestore, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useAuth } from '../../composables/useAuth.js';
+import { usePlayingTranslations } from '../../Translations/PlayingTranslation';
 
 // Props
 const props = defineProps({
@@ -209,6 +210,8 @@ defineExpose({
   handleSubmit,
   initializeWordSubmissions
 });
+
+const T = usePlayingTranslations;
 </script>
 
 <template>
@@ -217,7 +220,7 @@ defineExpose({
     <div v-if="isLoading" class="flex justify-center items-center h-full pt-10">
       <div class="flex flex-col items-center space-y-4">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
-        <span class="text-muted-foreground font-medium">Cargando configuración de la sala...</span>
+        <span class="text-muted-foreground font-medium">{{ T.loadingRoomConfig }}</span>
       </div>
     </div>
 
@@ -225,13 +228,13 @@ defineExpose({
     <div v-else-if="isCountdownActive" class="flex justify-center items-center h-full">
       <div class="text-center mb-6 md:mb-8 p-4 md:p-6 bg-gradient-to-br from-primary/8 to-primary/15 rounded-2xl border border-primary/25 shadow-inner">
         <p class="text-xs md:text-sm font-semibold text-primary/90 mb-2 uppercase tracking-widest">
-          Preparando la ronda
+          {{ T.preparingRound }}
         </p>
         <div class="text-6xl md:text-8xl lg:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
           {{ countdown }}
         </div>
         <p class="text-xs text-muted-foreground mt-2 font-medium">
-          La ronda comenzará en breve
+          {{ T.roundStartingSoon }}
         </p>
       </div>
     </div>
@@ -248,7 +251,7 @@ defineExpose({
                 <!-- Ronda x/d x rondas a la izquierda -->
                 <div class="text-left">
                   <p class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
-                    Ronda {{ currentRound }} / <span class="text-primary-foreground/90 text-sm font-medium"> de {{ settings.numberOfRounds }} rondas
+                    {{ T.round }} {{ currentRound }} / <span class="text-primary-foreground/90 text-sm font-medium"> de {{ settings.numberOfRounds }} {{ T.rounds }}
                     </span>
                   </p>
                 </div>
@@ -257,7 +260,7 @@ defineExpose({
                 <div class="flex items-center space-x-4">
                   <div class="text-center">
                     <div class="text-xs font-medium text-primary-foreground/80 uppercase tracking-wider">
-                      Tiempo restante
+                      {{ T.remainingTime }}
                     </div>
                     <div class="text-2xl md:text-3xl font-bold tabular-nums" 
                          :class="timeLeft <= 10 ? 'text-red-100 animate-pulse' : 'text-white'">
@@ -272,7 +275,7 @@ defineExpose({
             <div class="px-4 md:px-6 pt-4 md:pt-6">
               <div class="text-center mb-6 md:mb-8 p-4 md:p-6 bg-gradient-to-br from-primary/8 to-primary/15 rounded-2xl border border-primary/25 shadow-inner">
                 <p class="text-xs md:text-sm font-semibold text-primary/90 mb-2 uppercase tracking-widest">
-                  Letra actual
+                  {{ T.currentLetter }}
                 </p>
                 <div class="text-5xl md:text-5xl lg:text-8xl font-black tracking-wider text-primary drop-shadow-sm">
                   {{ currentLetter }}
@@ -294,7 +297,7 @@ defineExpose({
                         v-model="submission.word"
                         @input="handleWordChange(submission.category, $event.target.value)"
                         type="text"
-                        :placeholder="'Palabra con ' + currentLetter + '...'"
+                        :placeholder="'{{ T.wordWith }} ' + currentLetter + '...'"
                         class="flex h-12 w-full rounded-xl border-2 border-border bg-white px-4 py-3 text-base font-medium text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-all duration-200 hover:border-border/80"
                         :disabled="isSubmitting || hasSubmitted || timeLeft === 0 || isCountdownActive"
                       />
@@ -308,19 +311,19 @@ defineExpose({
                   >
                     <span v-if="hasSubmitted" class="flex items-center justify-center space-x-2">
                       <span>✅</span>
-                      <span>¡Palabras enviadas!</span>
+                      <span>{{ T.wordsSubmitted }}</span>
                     </span>
                     <span v-else-if="isSubmitting" class="flex items-center justify-center space-x-2">
                       <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                      <span>Enviando...</span>
+                      <span>{{ T.sending }}</span>
                     </span>
                     <span v-else-if="timeLeft === 0" class="flex items-center justify-center space-x-2">
                       <span>⏰</span>
-                      <span>Tiempo agotado</span>
+                      <span>{{ T.timeUp }}</span>
                     </span>
                     <span v-else class="flex items-center justify-center space-x-2">
                       <span>📝</span>
-                      <span>Enviar palabras</span>
+                      <span>{{ T.submitWords }}</span>
                     </span>
                   </button>
                 </form>
@@ -335,7 +338,7 @@ defineExpose({
             <div class="flex items-center justify-between mb-4 md:mb-6">
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 md:w-3 md:h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <h2 class="text-lg md:text-xl font-bold text-foreground">Jugadores en vivo</h2>
+                <h2 class="text-lg md:text-xl font-bold text-foreground">{{ T.playersOnline }}</h2>
               </div>
               <span class="text-xs md:text-sm text-muted-foreground font-medium bg-muted/30 px-2 py-1 rounded-full">
                 {{ players.length }}
@@ -358,16 +361,16 @@ defineExpose({
                     <span v-if="currentRoomData.submissions?.[player.id]" 
                           class="text-xs text-green-600 font-medium flex items-center space-x-1">
                       <span>✓</span>
-                      <span>Completado</span>
+                      <span>{{ T.completed }}</span>
                     </span>
                     <span v-else class="text-xs text-muted-foreground">
-                      Escribiendo...
+                      {{ T.writing }}
                     </span>
                   </div>
                 </div>
                 <div class="text-right">
                   <div class="text-lg font-bold text-primary">{{ player.score || 0 }}</div>
-                  <div class="text-xs text-muted-foreground font-medium">puntos</div>
+                  <div class="text-xs text-muted-foreground font-medium">{{ T.points }}</div>
                 </div>
               </div>
             </div>
@@ -375,11 +378,11 @@ defineExpose({
 
           <!-- Progreso de la partida - mejorado -->
           <div class="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 p-4 md:p-6">
-            <h3 class="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">Progreso del juego</h3>
+            <h3 class="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">{{ T.gameProgress }}</h3>
             <div class="space-y-3 md:space-y-4">
               <div>
                 <div class="flex justify-between text-sm font-medium text-muted-foreground mb-2">
-                  <span>Ronda actual</span>
+                  <span>{{ T.currentRound }}</span>
                   <span>{{ currentRound }}/{{ settings.numberOfRounds }}</span>
                 </div>
                 <div class="w-full bg-muted/50 rounded-full h-2">
@@ -391,11 +394,11 @@ defineExpose({
               <div class="grid grid-cols-2 gap-3 md:gap-4 pt-2">
                 <div class="text-center p-2 md:p-3 bg-muted/30 rounded-lg border border-border/30">
                   <div class="text-base md:text-lg font-bold text-primary">{{ categories.length }}</div>
-                  <div class="text-xs text-muted-foreground font-medium">Categorías</div>
+                  <div class="text-xs text-muted-foreground font-medium">{{ T.categories }}</div>
                 </div>
                 <div class="text-center p-2 md:p-3 bg-muted/30 rounded-lg border border-border/30">
                   <div class="text-base md:text-lg font-bold text-primary">{{ players.length }}</div>
-                  <div class="text-xs text-muted-foreground font-medium">Jugadores</div>
+                  <div class="text-xs text-muted-foreground font-medium">{{ T.players }}</div>
                 </div>
               </div>
             </div>
@@ -408,7 +411,7 @@ defineExpose({
         <button @click="advanceToNextRound" 
                 class="inline-flex items-center space-x-2 bg-gradient-to-r from-accent via-accent/95 to-accent/90 hover:from-accent/95 hover:via-accent hover:to-accent text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-accent/30 transform hover:scale-[1.02]">
          
-          <span class="text-sm md:text-base">Avanzar a la siguiente ronda</span>
+          <span class="text-sm md:text-base">{{ T.advanceToNextRound }}</span>
         </button>
       </div>
     </div>
@@ -421,9 +424,9 @@ defineExpose({
             <div class="text-xl md:text-2xl">⏳</div>
           </div>
         </div>
-        <h3 class="text-lg md:text-xl font-bold text-foreground mb-2">Preparando la ronda</h3>
+        <h3 class="text-lg md:text-xl font-bold text-foreground mb-2">{{ T.preparingRound }}</h3>
         <div class="text-muted-foreground font-medium text-sm md:text-base">
-          Esperando que inicie la ronda...
+          {{ T.waitingForGameStart }}
         </div>
       </div>
     </div>
@@ -432,9 +435,9 @@ defineExpose({
     <div v-else class="flex justify-center items-center h-full pt-20">
       <div class="max-w-md w-full mx-auto text-center p-6 md:p-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50">
         <div class="text-3xl md:text-4xl mb-4">❓</div>
-        <h3 class="text-lg md:text-xl font-bold text-foreground mb-2">Estado desconocido</h3>
+        <h3 class="text-lg md:text-xl font-bold text-foreground mb-2">{{ T.unknownState }}</h3>
         <div class="text-muted-foreground font-medium text-sm md:text-base">
-          No se pudo determinar el estado del juego.
+          {{ T.couldNotDetermineState }}
         </div>
       </div>
     </div>

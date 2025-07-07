@@ -84,7 +84,7 @@
           <option value="German">{{ T.german }}</option>
         </select>
         <p class="text-xs text-gray-500 mt-1">
-          This sets the language for word validation and suggestions during the game.
+          {{ T.languageDescription }}
         </p>
       </div>
 
@@ -124,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch,onMounted } from 'vue'
+import { ref, reactive, watch,onMounted } from 'vue';
 import {
   SettingsIcon,
   ListOrderedIcon,
@@ -133,63 +133,61 @@ import {
   ZapIcon,
   LoaderIcon,
   PlusCircleIcon
-} from 'lucide-vue-next'
-import { useTranslations } from '../../Translations/CreateRommTranslation';
+} from 'lucide-vue-next';
+import { useTranslations } from '../../Translations/CreateRoomTranslation';
 import { useRouter } from 'vue-router';
 import { getFirestore, collection, setDoc, serverTimestamp, getDocs, query, where, doc } from 'firebase/firestore';
 import '../../firebase/config.js';
 
-const uiLanguage = 'en' // Replace with actual user language from context
+const uiLanguage = 'en'; // Replace with actual user language from context
 const username = ref(localStorage.getItem('username')); // Replace with actual username from context
 
 const T = useTranslations;
 
-const isCreating = ref(false)
+const isCreating = ref(false);
 
 const settings = reactive({
   roomName: `${username.value}'s Game`,
   numberOfRounds: 3,
   timePerRound: 60,
-  categories: T.value.defaultCategoriesPlaceholder
-  ,
+  categories: T.defaultCategoriesPlaceholder,
   language: 'English',
   endRoundOnFirstSubmit: false
-})
+});
 
 watch(
   () => uiLanguage,
   (newLang) => {
-    settings.language = 'English'
-    settings.categories = T.value.defaultCategoriesPlaceholder
-    settings.roomName = `${username.value}'s Game`
+    settings.language = 'English';
+    settings.categories = T.defaultCategoriesPlaceholder;
+    settings.roomName = `${username.value}'s Game`;
   }
-)
+);
 const router = useRouter();
- const generateUniqueRoomId = async (db) => {
-          let roomId;
-          let isUnique = false;
+const generateUniqueRoomId = async (db) => {
+  let roomId;
+  let isUnique = false;
 
-          while (!isUnique) {
-            roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const roomRef = collection(db, 'rooms');
-            const querySnapshot = await getDocs(query(roomRef, where('id', '==', roomId)));
+  while (!isUnique) {
+    roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const roomRef = collection(db, 'rooms');
+    const querySnapshot = await getDocs(query(roomRef, where('id', '==', roomId)));
 
-            if (querySnapshot.empty) {
-              isUnique = true;
-            }
-          }
+    if (querySnapshot.empty) {
+      isUnique = true;
+    }
+  }
 
-          return roomId;
-        };
+  return roomId;
+};
 
 const handleSubmit = async () => {
-
   isCreating.value = true;
   const userId = localStorage.getItem('userId');
   const username = localStorage.getItem('username');
 
   if (!userId || !username) {
-    alert('Usuario no autenticado. Por favor, inicia sesión.');
+    alert(T.unauthenticatedAlert);
     router.replace('/login');
     return;
   }
@@ -227,24 +225,22 @@ const handleSubmit = async () => {
 
   try {
     await setDoc(doc(db, 'rooms', roomId), roomData);
-    alert(`Sala creada con éxito. ID: ${roomId}`);
+    alert(`${T.roomCreatedSuccess} ${roomId}`);
     router.push(`/game/${roomId}`);
   } catch (error) {
-    console.error('Error al crear la sala:', error);
-    alert('Hubo un error al crear la sala. Por favor, intenta de nuevo.');
+    console.error(T.roomCreatedError, error);
+    alert(T.roomCreatedError);
   } finally {
-    isCreating.value = false
+    isCreating.value = false;
   }
-
 };
- 
 
 onMounted(() => {
   const userId = localStorage.getItem('userId');
   const storedUsername = localStorage.getItem('username');
 
   if (!userId || !storedUsername) {
-    console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
+    console.log(T.unauthenticatedLog);
     router.replace('/login');
   } else {
     username.value = storedUsername;

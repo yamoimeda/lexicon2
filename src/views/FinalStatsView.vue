@@ -21,6 +21,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useFinalStatsTranslations } from '../Translations/FinalStatsTranslation';
 
 const players = ref([
   { name: 'Jugador 1', score: 100 },
@@ -29,6 +30,7 @@ const players = ref([
 ]);
 
 const router = useRouter();
+const T = useFinalStatsTranslations;
 
 const goHome = () => {
   router.push('/');
