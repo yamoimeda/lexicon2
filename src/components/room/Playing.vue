@@ -20,6 +20,8 @@ const wordSubmissions = ref([]);
 const isSubmitting = ref(false);
 const timeLeft = ref(0);
 const showNextRoundButton = ref(false);
+const countdown = ref(5);
+const isCountdownActive = ref(false);
 
 // Computed properties
 const settings = computed(() => currentRoomData.value?.settings || {});
@@ -49,33 +51,6 @@ const initializeWordSubmissions = () => {
   }
 };
 
-// Escuchar cambios en tiempo real de la sala
-const listenToRoomChanges = () => {
-  const roomRef = doc(db, 'rooms', props.roomId);
-  
-  unsubscribe = onSnapshot(roomRef, (doc) => {
-    if (doc.exists()) {
-      const data = doc.data();
-      const previousLetter = currentRoomData.value?.settings?.currentLetter;
-      const previousRound = currentRoomData.value?.settings?.currentRound;
-      
-      currentRoomData.value = data;
-      
-      // Inicializar o reiniciar formulario si es necesario
-      if (!wordSubmissions.value.length || 
-          previousLetter !== data.settings?.currentLetter ||
-          previousRound !== data.settings?.currentRound) {
-        initializeWordSubmissions();
-        if (data.settings?.gameStatus === 'playing') {
-          startTimer();
-        }
-      }
-      
-      console.log('Datos de la sala actualizados:', data);
-    }
-  });
-};
-
 // Funciones para el temporizador
 const startTimer = () => {
   if (timerInterval) clearInterval(timerInterval);
@@ -102,6 +77,49 @@ const startTimer = () => {
       showNextRoundButton.value = true; // Mostrar botón al admin
     }
   }, 1000);
+};
+
+// Adjust round timer to compensate for countdown and hide other content during countdown
+const startCountdown = () => {
+  isCountdownActive.value = true;
+  countdown.value = 5;
+
+  const countdownInterval = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    } else {
+      clearInterval(countdownInterval);
+      isCountdownActive.value = false;
+      timeLeft.value += 5; // Compensate for countdown time
+      startTimer(); // Start the round timer after countdown
+    }
+  }, 1000);
+};
+
+// Escuchar cambios en tiempo real de la sala
+const listenToRoomChanges = () => {
+  const roomRef = doc(db, 'rooms', props.roomId);
+
+  unsubscribe = onSnapshot(roomRef, (doc) => {
+    if (doc.exists()) {
+      const data = doc.data();
+      const previousLetter = currentRoomData.value?.settings?.currentLetter;
+      const previousRound = currentRoomData.value?.settings?.currentRound;
+
+      currentRoomData.value = data;
+
+      if (!wordSubmissions.value.length || 
+          previousLetter !== data.settings?.currentLetter ||
+          previousRound !== data.settings?.currentRound) {
+        initializeWordSubmissions();
+        if (data.settings?.gameStatus === 'playing') {
+          startCountdown(); // Trigger countdown before starting the round
+        }
+      }
+
+      console.log('Datos de la sala actualizados:', data);
+    }
+  });
 };
 
 // Manejar cambios en las palabras
@@ -203,6 +221,21 @@ defineExpose({
       </div>
     </div>
 
+    <!-- Countdown display -->
+    <div v-else-if="isCountdownActive" class="flex justify-center items-center h-full">
+      <div class="text-center mb-6 md:mb-8 p-4 md:p-6 bg-gradient-to-br from-primary/8 to-primary/15 rounded-2xl border border-primary/25 shadow-inner">
+        <p class="text-xs md:text-sm font-semibold text-primary/90 mb-2 uppercase tracking-widest">
+          Preparando la ronda
+        </p>
+        <div class="text-6xl md:text-8xl lg:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
+          {{ countdown }}
+        </div>
+        <p class="text-xs text-muted-foreground mt-2 font-medium">
+          La ronda comenzará en breve
+        </p>
+      </div>
+    </div>
+
     <!-- Estado: jugando -->
     <div v-else-if="isPlaying" class="max-w-7xl mx-auto">
       <div class="grid lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
@@ -263,14 +296,14 @@ defineExpose({
                         type="text"
                         :placeholder="'Palabra con ' + currentLetter + '...'"
                         class="flex h-12 w-full rounded-xl border-2 border-border bg-white px-4 py-3 text-base font-medium text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-all duration-200 hover:border-border/80"
-                        :disabled="isSubmitting || hasSubmitted || timeLeft === 0"
+                        :disabled="isSubmitting || hasSubmitted || timeLeft === 0 || isCountdownActive"
                       />
                     </div>
                   </div>
 
                   <button
                     type="submit"
-                    :disabled="isSubmitting || hasSubmitted || timeLeft === 0"
+                    :disabled="isSubmitting || hasSubmitted || timeLeft === 0 || isCountdownActive"
                     class="w-full h-12 md:h-14 bg-gradient-to-r from-primary via-primary/95 to-primary/90 hover:from-primary/95 hover:via-primary hover:to-primary text-primary-foreground font-bold text-base md:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-primary/30 transform hover:scale-[1.02] disabled:hover:scale-100"
                   >
                     <span v-if="hasSubmitted" class="flex items-center justify-center space-x-2">

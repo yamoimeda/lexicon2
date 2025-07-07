@@ -150,30 +150,11 @@ const getStatusText = (status) => {
   }
 };
 
-const countdown = ref(0);
-
-const startCountdown = () => {
-  countdown.value = 3; // Iniciar con 3 segundos
-  const interval = setInterval(() => {
-    countdown.value -= 1;
-    if (countdown.value <= 0) {
-      clearInterval(interval);
-    }
-  }, 1000);
-};
-
 // Exponer la API pública del componente
 defineExpose({
   fetchRoomData,
   leaveRoom,
   roomData
-});
-
-watch(() => roomData.value?.settings?.currentRound, (newRound, oldRound) => {
-  if (newRound !== oldRound) {
-    startCountdown();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
 });
 </script>
 
@@ -203,21 +184,8 @@ watch(() => roomData.value?.settings?.currentRound, (newRound, oldRound) => {
 
     <!-- Contenido principal cuando los datos están cargados -->
     <template v-else>
-      <!-- Mostrar cuenta regresiva si está activa -->
-      <div v-if="countdown > 0" class="text-center mb-6 md:mb-8 p-4 md:p-6 bg-gradient-to-br from-primary/8 to-primary/15 rounded-2xl border border-primary/25 shadow-inner">
-        <p class="text-xs md:text-sm font-semibold text-primary/90 mb-2 uppercase tracking-widest">
-          Preparando la ronda
-        </p>
-        <div class="text-6xl md:text-8xl lg:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
-          {{ countdown }}
-        </div>
-        <p class="text-xs text-muted-foreground mt-2 font-medium">
-          La ronda comenzará en breve
-        </p>
-      </div>
-
       <!-- Cabecera mejorada con bordes redondeados -->
-      <div class="bg-muted/90 rounded-2xl backdrop-blur-sm border border-border/30 shadow-sm sticky top-0 z-50">
+      <div class="bg-muted/90 rounded-2xl backdrop-blur-sm border border-border/30 shadow-sm sticky top-0 z-50 md:sticky md:top-0 md:z-50 lg:sticky lg:top-0 lg:z-50 sm:fixed sm:bottom-0 sm:w-full">
         <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3 md:space-x-4">
