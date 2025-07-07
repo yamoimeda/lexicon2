@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getFirestore, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { useAuth } from '../../composables/useAuth.js';
 
 // Definir props
 const props = defineProps({
@@ -19,7 +20,7 @@ const router = useRouter();
 const db = getFirestore();
 const players = ref([]);
 const gameSettings = ref({});
-const currentUserId = ref(localStorage.getItem('userId'));
+const { userId: currentUserId, username, isAuthenticated } = useAuth();
 let unsubscribe = null;
 
 // Computed para verificar si el usuario actual es admin
@@ -77,10 +78,8 @@ const leaveRoom = () => {
 };
 
 onMounted(() => {
-  const userId = localStorage.getItem('userId');
-  const username = localStorage.getItem('username');
-
-  if (!userId || !username) {
+  // Verificar autenticación usando el composable
+  if (!isAuthenticated.value || !currentUserId.value || !username.value) {
     console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
     router.push('/login');
     return;

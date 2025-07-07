@@ -25,19 +25,19 @@
         <!-- Authentication Status -->
         <div v-if="isAuthenticated" class="flex items-center gap-3 sm:gap-4">
           <div class="flex items-center gap-2">
-            <UserCircle size={24} class="w-4 h-4 shrink-0" />
+            <UserCircle class="w-4 h-4 shrink-0" />
             <span class="text-sm font-medium hidden sm:inline">{{ username }}</span>
           </div>
-          <button @click="logout" class="flex flex-row text-primary-foreground 
-          hover:bg-primary/70 px-2 sm:px-3 items-center gap-2 sm:gap-2">
-            <LogOut size={18} class="w-4 h-4 shrink-0" />
+          <button @click="handleLogout" class="flex flex-row text-primary-foreground 
+          hover:bg-primary/70 px-2 sm:px-3 items-center gap-2 sm:gap-2 rounded-md transition-colors">
+            <LogOut class="w-4 h-4 shrink-0" />
             <span class="hidden sm:inline">{{ currentTranslations.logout }}</span>
           </button>
         </div>
         <div v-else>
           <router-link to="/login" class="flex flex-row text-primary-foreground 
-          hover:bg-primary/70 px-2 sm:px-3 items-center gap-2 sm:gap-2">
-            <LogIn  class="w-4 h-4 shrink-0"  />
+          hover:bg-primary/70 px-2 sm:px-3 items-center gap-2 sm:gap-2 rounded-md transition-colors">
+            <LogIn class="w-4 h-4 shrink-0" />
             <span class="hidden sm:inline">{{ currentTranslations.login }}</span>
           </router-link>
         </div>
@@ -47,24 +47,26 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted,computed } from 'vue';
-import { Globe, UserCircle, LogOut, LogIn } from 'lucide-vue-next'; // Assuming you'll use lucide-vue-next for icons
-import { lenguage } from '../../composables/GlobalVariables'
+import { ref, watch, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { Globe, UserCircle, LogOut, LogIn } from 'lucide-vue-next';
+import { lenguage } from '../../composables/GlobalVariables';
 import { useTranslations } from '../../Translations/HeaderTraducction';
+import { useAuth } from '../../composables/useAuth.js';
 
-
-
-
+const router = useRouter();
 const currentTranslations = useTranslations;
+const { isAuthenticated, username, logout: authLogout } = useAuth();
 
-const logout = () => {
+const handleLogout = async () => {
   console.log('Logout clicked');
-  // Implement actual logout logic here
-  isAuthenticated.value = false;
-  username.value = '';
+  const success = await authLogout();
+  if (success) {
+    router.push('/login');
+  } else {
+    console.error('Error al cerrar sesión');
+  }
 };
-
-
 </script>
 
 <style scoped>

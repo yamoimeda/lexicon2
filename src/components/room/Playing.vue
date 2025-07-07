@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { getFirestore, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { useAuth } from '../../composables/useAuth.js';
 
 // Props
 const props = defineProps({
@@ -9,6 +10,7 @@ const props = defineProps({
 });
 
 const db = getFirestore();
+const { userId: currentUserId, isAuthenticated } = useAuth();
 let unsubscribe = null;
 let timerInterval = null;
 
@@ -28,7 +30,6 @@ const isWaiting = computed(() => settings.value.gameStatus === 'waiting');
 const currentLetter = computed(() => settings.value.currentLetter || '?');
 const currentRound = computed(() => settings.value.currentRound || 1);
 const categories = computed(() => settings.value.categories || []);
-const currentUserId = computed(() => localStorage.getItem('userId'));
 const hasSubmitted = computed(() => {
   const submissions = currentRoomData.value?.submissions || {};
   return !!submissions[currentUserId.value];
@@ -210,17 +211,20 @@ defineExpose({
           <div class="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl border border-border/50 overflow-hidden">
             <!-- Cabecera elegante con gradiente -->
             <div class="bg-gradient-to-r from-primary via-primary/95 to-primary/80 text-white p-4 md:p-6">
-              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
-                <div>
-                  <h1 class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
+              <div class="flex flex-row justify-between items-center gap-3">
+                <!-- Ronda x/d x rondas a la izquierda -->
+                <div class="text-left">
+                  <p class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
                     Ronda {{ currentRound }} /
-                  </h1>
+                  </p>
                   <p class="text-primary-foreground/90 text-sm font-medium">
                     de {{ settings.numberOfRounds }} rondas
                   </p>
                 </div>
+
+                <!-- Tiempo restante a la derecha -->
                 <div class="flex items-center space-x-4">
-                  <div class="text-center sm:text-right">
+                  <div class="text-center">
                     <div class="text-xs font-medium text-primary-foreground/80 uppercase tracking-wider">
                       Tiempo restante
                     </div>

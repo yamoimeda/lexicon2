@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getFirestore, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useTranslations } from '../Translations/HomeTranslation';
+import { useAuth } from '../composables/useAuth.js';
 import RoomNotFound from '../components/room/RoomNotFound.vue';
 import Waiting from '../components/room/Waiting.vue';
 import Playing from '../components/room/Playing.vue';
@@ -17,6 +18,7 @@ const props = defineProps({
   }
 });
 
+const { isAuthenticated, userId, username } = useAuth();
 const isAdmin = ref(true); // Cambiar según el usuario actual
 const router = useRouter();
 const db = getFirestore();
@@ -103,16 +105,21 @@ const listenToRoomChanges = () => {
 };
 
 onMounted(() => {
-  const userId = localStorage.getItem('userId');
-  const username = localStorage.getItem('username');
-
-  if (!userId || !username) {
+  // Verificar autenticación usando el composable
+  if (!isAuthenticated.value || !userId.value || !username.value) {
     console.log('Usuario no autenticado. Redirigiendo a la página de inicio de sesión.');
     router.replace('/login');
   } else {
     listenToRoomChanges();
     fetchRoomData();
   }
+
+  // Escuchar cambios en el estado de la sala para hacer scroll hacia arriba al iniciar una nueva ronda
+  watch(() => roomData.value?.settings?.currentRound, (newRound, oldRound) => {
+    if (newRound !== oldRound) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
 });
 
 onUnmounted(() => {
@@ -143,6 +150,18 @@ const getStatusText = (status) => {
   }
 };
 
+const countdown = ref(0);
+
+const startCountdown = () => {
+  countdown.value = 3; // Iniciar con 3 segundos
+  const interval = setInterval(() => {
+    countdown.value -= 1;
+    if (countdown.value <= 0) {
+      clearInterval(interval);
+    }
+  }, 1000);
+};
+
 // Exponer la API pública del componente
 defineExpose({
   fetchRoomData,
@@ -150,6 +169,12 @@ defineExpose({
   roomData
 });
 
+watch(() => roomData.value?.settings?.currentRound, (newRound, oldRound) => {
+  if (newRound !== oldRound) {
+    startCountdown();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
 </script>
 
 <template>
@@ -178,13 +203,24 @@ defineExpose({
 
     <!-- Contenido principal cuando los datos están cargados -->
     <template v-else>
+      <!-- Mostrar cuenta regresiva si está activa -->
+      <div v-if="countdown > 0" class="text-center mb-6 md:mb-8 p-4 md:p-6 bg-gradient-to-br from-primary/8 to-primary/15 rounded-2xl border border-primary/25 shadow-inner">
+        <p class="text-xs md:text-sm font-semibold text-primary/90 mb-2 uppercase tracking-widest">
+          Preparando la ronda
+        </p>
+        <div class="text-6xl md:text-8xl lg:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
+          {{ countdown }}
+        </div>
+        <p class="text-xs text-muted-foreground mt-2 font-medium">
+          La ronda comenzará en breve
+        </p>
+      </div>
+
       <!-- Cabecera mejorada con bordes redondeados -->
       <div class="bg-muted/90 rounded-2xl backdrop-blur-sm border border-border/30 shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3 md:space-x-4">
-              
-             
               <!-- Información de la sala con bordes muy redondeados -->
               <div class="px-3 py-2 md:px-4 md:py-3">
                 <h1 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground tracking-tight mb-1">
@@ -213,7 +249,6 @@ defineExpose({
             <!-- Botón de salir mejorado -->
             <button @click="leaveRoom" 
                     class=" md:inline-flex items-center space-x-2 px-3 py-2 md:px-4 rounded-2xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30">
-              
               <span class=" lg:inline">Salir</span>
             </button>
           </div>
@@ -264,7 +299,6 @@ defineExpose({
         </div>
       </div>
 
-      
       <!-- Indicador de conexión -->
       <div class="fixed bottom-4 left-4 z-40">
         <div class="bg-white/90 backdrop-blur-sm rounded-2xl px-2 py-1 md:px-3 md:py-2 shadow-lg border border-border/50 flex items-center space-x-1 md:space-x-2">
