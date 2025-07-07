@@ -185,12 +185,12 @@ defineExpose({
     <!-- Contenido principal cuando los datos están cargados -->
     <template v-else>
       <!-- Cabecera mejorada con bordes redondeados -->
-      <div class="bg-muted/90 rounded-2xl backdrop-blur-sm border border-border/30 shadow-sm sticky top-0 z-50 md:sticky md:top-0 md:z-50 lg:sticky lg:top-0 lg:z-50 sm:fixed sm:bottom-0 sm:w-full">
+      <div class="bg-muted/90 rounded-2xl backdrop-blur-sm border border-border/30 shadow-sm ">
         <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3 md:space-x-4">
               <!-- Información de la sala con bordes muy redondeados -->
-              <div class="px-3 py-2 md:px-4 md:py-3">
+              <div class="">
                 <h1 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground tracking-tight mb-1">
                   {{ roomData.settings.roomName }}
                 </h1>

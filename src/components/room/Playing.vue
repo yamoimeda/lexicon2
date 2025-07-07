@@ -274,7 +274,7 @@ defineExpose({
                 <p class="text-xs md:text-sm font-semibold text-primary/90 mb-2 uppercase tracking-widest">
                   Letra actual
                 </p>
-                <div class="text-6xl md:text-8xl lg:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
+                <div class="text-5xl md:text-5xl lg:text-8xl font-black tracking-wider text-primary drop-shadow-sm">
                   {{ currentLetter }}
                 </div>
               </div>
@@ -407,7 +407,7 @@ defineExpose({
       <div v-if="showNextRoundButton && isAdmin" class="text-center mt-6 md:mt-8">
         <button @click="advanceToNextRound" 
                 class="inline-flex items-center space-x-2 bg-gradient-to-r from-accent via-accent/95 to-accent/90 hover:from-accent/95 hover:via-accent hover:to-accent text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-accent/30 transform hover:scale-[1.02]">
-          <span>🚀</span>
+         
           <span class="text-sm md:text-base">Avanzar a la siguiente ronda</span>
         </button>
       </div>
