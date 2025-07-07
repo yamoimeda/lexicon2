@@ -3,9 +3,11 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 import '../firebase/config.js';
+import { useAuth } from '../composables/useAuth.js';
 
 const username = ref('');
 const router = useRouter();
+const { initializeAuth } = useAuth();
 
 const handleLogin = async () => {
   if (!username.value.trim()) {
@@ -22,8 +24,11 @@ const handleLogin = async () => {
     localStorage.setItem('userId', userId);
     localStorage.setItem('username', username.value.trim());
 
+    // Inicializar el estado de autenticación
+    await initializeAuth();
+
     // Redirigir al inicio
-    router.push('/');
+    router.replace('/');
   } catch (error) {
     console.error('Error al autenticar:', error);
     alert('Hubo un error al iniciar sesión. Por favor, intenta de nuevo.');

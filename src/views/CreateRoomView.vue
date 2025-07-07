@@ -4,7 +4,7 @@
         import CreateRoomForm from '../components/room/CreateRoomForm.vue'; // Assuming a Vue component for the form
         import { useTranslations } from '../Translations/CreateRommTranslation';
         import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, setDoc, doc } from 'firebase/firestore';
-        import { ArrowRight } from 'lucide-vue-next'
+        import { ArrowLeft } from 'lucide-vue-next'
         // Dummy user context for now
         const isAuthenticated = ref(true); // Replace with actual auth state
         const language = ref('en'); // Replace with actual language state
@@ -35,10 +35,10 @@
         <div className="mb-8 text-center">
           <button
           @click="Regresar"
-              class="w-full px-4 py-2 border-1 text-secondary rounded hover:bg-secondary/90 disabled:opacity-50 hover:text-white"
-            >
+          class="w-full px-4 py-2 border-1 text-secondary rounded hover:bg-secondary/90 disabled:opacity-50 hover:text-white"
+          >
+              <ArrowLeft class="ml-2 w-4 h-4 inline" />
               {{T.backToHome}}
-              <ArrowRight class="ml-2 w-4 h-4 inline" />
             </button>
            
         </div>
