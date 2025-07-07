@@ -162,6 +162,8 @@ const validateWord = (word) => {
   const currentLetter = settings.value.currentLetter?.toLowerCase() || '';
   return word.toLowerCase().startsWith(currentLetter);
 };
+
+
 </script>
 
 <template>
@@ -172,13 +174,13 @@ const validateWord = (word) => {
         <div class="bg-gradient-to-r from-accent via-accent/95 to-accent/80 text-white p-4 md:p-6">
           <div class="text-center">
             <h1 class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight mb-1 md:mb-2">
-              📊 Revisión de Respuestas
+              📊 {{ T.reviewingAnswers }}
             </h1>
             <p class="text-accent-foreground/90 text-sm md:text-base lg:text-lg font-medium">
-              Ronda {{ currentRound }} de {{ numberOfRounds }}
+              {{ T.round }} {{ currentRound }} {{ T.of }} {{ numberOfRounds }}
             </p>
             <p class="text-accent-foreground/80 text-xs md:text-sm mt-1 md:mt-2">
-              {{ isAdmin ? 'Revisa y valida las respuestas de todos los jugadores' : 'Tus respuestas de esta ronda' }}
+              {{ isAdmin ? T.adminReviewingInstructions : T.playerReviewingInstructions }}
             </p>
           </div>
         </div>
@@ -188,7 +190,7 @@ const validateWord = (word) => {
       <div v-if="!isAdmin" class="bg-white/95 backdrop-blur-sm shadow-xl rounded-xl md:rounded-2xl border border-border/50 p-4 md:p-6">
         <div class="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
           <div class="w-3 h-3 md:w-4 md:h-4 bg-blue-500 rounded-full animate-pulse"></div>
-          <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground">Tus Respuestas</h2>
+          <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{{ T.playerReviewingInstructions }}</h2>
         </div>
         
         <div class="grid gap-2 md:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -235,7 +237,7 @@ const validateWord = (word) => {
                 
                 <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-2">
                   <div class="flex-1">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-2 gap-1">
+                    <div class="flex flex-row sm:flex-row sm:items-center sm:space-x-2 mb-2 gap-1">
                       <div class="text-sm md:text-base lg:text-lg font-bold text-foreground bg-white rounded-md px-2 py-1 border border-border shadow-sm">
                         {{ answer || 'Sin respuesta' }}
                       </div>
@@ -243,6 +245,10 @@ const validateWord = (word) => {
                             class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium border border-yellow-200">
                         ⚠️ No empieza con {{ settings.currentLetter }}
                       </span>
+                      <div class="bg-white rounded-md px-2 py-1 border border-border shadow-sm">
+                        <span class="text-sm md:text-base font-bold text-primary">{{ getFinalPoints(category, answer) }}</span>
+                        <span class="text-xs text-muted-foreground ml-1">puntos</span>
+                      </div>
                     </div>
                     
                     <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-2 gap-1">
@@ -257,26 +263,17 @@ const validateWord = (word) => {
                           +{{ playersWithAnswer.length - 3 }}
                         </div>
                       </div>
-                      <div class="text-xs md:text-sm text-muted-foreground">
+                      <!-- <div class="text-xs md:text-sm text-muted-foreground">
                         <span class="font-medium">{{ playersWithAnswer.length }} jugador(es):</span>
                         <span class="block sm:inline sm:ml-1">{{ playersWithAnswer.map(p => p.name).join(', ') }}</span>
-                      </div>
+                      </div> -->
                     </div>
                     
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2 gap-1">
-                      <div class="bg-white rounded-md px-2 py-1 border border-border shadow-sm">
-                        <span class="text-sm md:text-base font-bold text-primary">{{ getFinalPoints(category, answer) }}</span>
-                        <span class="text-xs text-muted-foreground ml-1">puntos</span>
-                      </div>
-                      <span v-if="answer" class="text-xs text-muted-foreground">
-                        Base: {{ getPointsForAnswer(category, answer) }} pts
-                      </span>
-                    </div>
                   </div>
                   
                   <button v-if="answer" 
                           @click="toggleAnswerValidation(category, answer)"
-                          class="px-2 py-1 rounded-md text-xs font-bold transition-all duration-300 hover:shadow-md focus:outline-none focus:ring-4 hover:scale-[1.02] lg:mt-0 mt-2 w-full lg:w-auto"
+                          class="px-2 py-2 rounded-md text-xs font-bold transition-all duration-300 hover:shadow-md focus:outline-none focus:ring-4 hover:scale-[1.02] lg:mt-0 mt-0 w-full lg:w-auto"
                           :class="isAnswerValid(category, answer) 
                             ? 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-300' 
                             : 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-300'">
