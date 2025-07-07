@@ -215,10 +215,8 @@ defineExpose({
                 <!-- Ronda x/d x rondas a la izquierda -->
                 <div class="text-left">
                   <p class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
-                    Ronda {{ currentRound }} /
-                  </p>
-                  <p class="text-primary-foreground/90 text-sm font-medium">
-                    de {{ settings.numberOfRounds }} rondas
+                    Ronda {{ currentRound }} / <span class="text-primary-foreground/90 text-sm font-medium"> de {{ settings.numberOfRounds }} rondas
+                    </span>
                   </p>
                 </div>
 
@@ -246,9 +244,6 @@ defineExpose({
                 <div class="text-6xl md:text-8xl lg:text-9xl font-black tracking-wider text-primary drop-shadow-sm">
                   {{ currentLetter }}
                 </div>
-                <p class="text-xs text-muted-foreground mt-2 font-medium">
-                  Todas las palabras deben empezar con esta letra
-                </p>
               </div>
 
               <!-- Formulario mejorado y más responsivo -->
