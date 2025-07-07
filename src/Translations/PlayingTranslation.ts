@@ -19,7 +19,16 @@ const translations = {
     unknownState: "Unknown State",
     couldNotDetermineState: "Could not determine the current state.",
     advanceToNextRound: "Advance to Next Round",
-    waitingForGameStart: "Waiting for the game to start..."
+    waitingForGameStart: "Waiting for the game to start...",
+    wordWith: "Word with",
+    wordsSubmitted:"¡Words Submitted!",
+    sending: "Sending...",
+    timeUp: "Time's up",
+    submitWords: "Submit words",
+    categories:"Categories",
+    players:"Players",
+    remainingTime: "Remaining Time",
+    nextRound: "Next Round",
   },
   es: {
     currentPlayer: "Jugador Actual",
@@ -38,7 +47,16 @@ const translations = {
     unknownState: "Estado Desconocido",
     couldNotDetermineState: "No se pudo determinar el estado actual.",
     advanceToNextRound: "Avanzar a la siguiente ronda",
-    waitingForGameStart: "Esperando que comience el juego..."
+    waitingForGameStart: "Esperando que comience el juego...",
+    wordWith: "Palabra con ",
+    wordsSubmitted: "¡Palabras enviadas!",
+    sending: "Enviando...",
+    timeUp: "Tiempo agotado",
+    submitWords: "Enviar palabras",
+    categories: "categorias",
+    players: "Jugadores",
+    remainingTime: "Tiempo restante",
+    nextRound: "Siguiente ronda",
   }
 };
 

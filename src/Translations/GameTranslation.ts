@@ -14,7 +14,8 @@ const translations = {
     round: "Round",
     category: "Category",
     timeLeft: "Time Left",
-    leave: "Leave Game"
+    leave: "Leave Game",
+    live: "online"
   },
   es: {
     start: "Iniciar Juego",
@@ -28,7 +29,8 @@ const translations = {
     round: "Ronda",
     category: "Categoría",
     timeLeft: "Tiempo Restante",
-    leave: "Salir del Juego"
+    leave: "Salir del Juego",
+    live: "Conectado"
   }
 };
 

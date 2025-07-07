@@ -297,7 +297,7 @@ const T = usePlayingTranslations;
                         v-model="submission.word"
                         @input="handleWordChange(submission.category, $event.target.value)"
                         type="text"
-                        :placeholder="'{{ T.wordWith }} ' + currentLetter + '...'"
+                        :placeholder=" T.wordWith + ' ' + currentLetter + ' ...'"
                         class="flex h-12 w-full rounded-xl border-2 border-border bg-white px-4 py-3 text-base font-medium text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-all duration-200 hover:border-border/80"
                         :disabled="isSubmitting || hasSubmitted || timeLeft === 0 || isCountdownActive"
                       />
